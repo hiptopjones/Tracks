@@ -24,6 +24,8 @@ namespace Tracks
         private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; } = ServiceLocator.Instance.GetService<ResourceManager>();
 
+        private TimeSpan ElapsedTime { get; set; }
+
         public override void Awake()
         {
             ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
@@ -66,13 +68,17 @@ namespace Tracks
             GL.VertexAttribPointer(textureLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(textureLocation);
 
-            // Unbind the vertex buffer object
+            // Unbind the vertex buffer object (does not affect vertex array)
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            // Unbind the vertex array object
+            // Unbind the vertex array object (also unbinds element buffer)
             GL.BindVertexArray(vertexArrayId);
         }
 
+        public override void Update(float deltaTime)
+        {
+            ElapsedTime += TimeSpan.FromSeconds(deltaTime);
+        }
 
         public override void Draw()
         {
@@ -80,28 +86,45 @@ namespace Tracks
             GL.BindTexture(TextureTarget.Texture2D, Texture.NativeHandle);
             GL.BindVertexArray(VertexArrayId);
 
-            Matrix4 transform = GetTransform();
-            int transformLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "transform");
-            GL.UniformMatrix4(transformLocation, true, ref transform);
+            Matrix4 model = GetModelMatrix();
+            int modelLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "model");
+            GL.UniformMatrix4(modelLocation, true, ref model);
+
+            Matrix4 view = GetViewMatrix();
+            int viewLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "view");
+            GL.UniformMatrix4(viewLocation, true, ref view);
+
+            Matrix4 projection = GetProjectionMatrix();
+            int projectionLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "projection");
+            GL.UniformMatrix4(projectionLocation, true, ref projection);
 
             GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
 
-            GL.BindVertexArray(0);
+            GL.BindVertexArray(0);  
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.UseProgram(0);
         }
 
-        private Matrix4 GetTransform()
+        private Matrix4 GetModelMatrix()
         {
-            // Rudimentary animation by creating and setting a transform based on the current time
-            float seconds = (float)(DateTime.Now.TimeOfDay.TotalSeconds);
-            float degreesPerSecond = 90;
-            Matrix4 transform = Matrix4.Identity;
-            //transform *= Matrix4.CreateScale((float)Math.Pow(4, Math.Sin(MathHelper.DegreesToRadians(seconds * degreesPerSecond))));
-            transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(seconds * degreesPerSecond));
-            //transform *= Matrix4.CreateTranslation(new Vector3((float)Math.Sin(MathHelper.DegreesToRadians(seconds * degreesPerSecond)) * 0.5f, 0, 0));
+            const float degreesPerSecond = 90;
 
-            return transform;
+            Matrix4 model = Matrix4.Identity;
+            model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)ElapsedTime.TotalSeconds * degreesPerSecond));
+            return model;
+        }
+
+        private Matrix4 GetViewMatrix()
+        {
+            // Move back slightly
+            Matrix4 view = Matrix4.CreateTranslation(0.0f, 0.09f, -3.0f);
+            return view;
+        }
+
+        private Matrix4 GetProjectionMatrix()
+        {
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), GameSettings.WindowWidth / (float)GameSettings.WindowHeight, 0.1f, 100.0f);
+            return projection;
         }
     }
 }
