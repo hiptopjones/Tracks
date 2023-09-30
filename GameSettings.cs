@@ -12,8 +12,8 @@ namespace Tracks
         public const string GameName = "Tracks";
 
         // Window
-        public const int WindowWidth = 1600;
-        public const int WindowHeight = 1200;
+        public const int WindowWidth = 800;
+        public const int WindowHeight = 600;
         public static readonly Color WindowClearColor = new Color(30, 30, 30);
 
         // Stats

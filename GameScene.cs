@@ -15,85 +15,49 @@ namespace Tracks
             GameObjectManager = new GameObjectManager();
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
-            CreateDebugObject();
-
-            Vector3f[] leftTrianglePositions = new[]
-            {
-                new Vector3f(-0.5f, -0.25f, 0.0f),
-                new Vector3f(0.0f, -0.25f, 0.0f),
-                new Vector3f(-0.25f, 0.25f, 0.0f)
-            };
-
-            Vector3f[] rightTrianglePositions = new[]
-            {
-                new Vector3f(0.0f, -0.25f, 0.0f),
-                new Vector3f(0.5f, -0.25f, 0.0f),
-                new Vector3f(0.25f,  0.25f, 0.0f)
-            };
-
-            Vector3f[] triangleColors = new[]
-            {
-                new Vector3f(1.0f, 0.0f, 0.0f),
-                new Vector3f(0.0f, 1.0f, 0.0f),
-                new Vector3f(0.0f, 0.0f, 1.0f)
-            };
-
-            Vector2f[] textureCoordinates = new[]
-            {
-                // Y is flipped due to difference in SFML texture origin (?)
-                new Vector2f(0.0f, 1.0f),
-                new Vector2f(1.0f, 1.0f),
-                new Vector2f(0.5f, 0.0f)
-            };
-
-            CreateTriangleObject("Left Triangle", leftTrianglePositions, triangleColors, textureCoordinates);
-            CreateTriangleObject("Right Triangle", rightTrianglePositions, triangleColors, textureCoordinates);
+            Create2dObject();
+            CreateTestQuad();
         }
 
-        private GameObject CreateDebugObject()
+        private GameObject Create2dObject()
         {
             GameObject debug = GameObjectManager.CreateGameObject("Debug");
-            debug.Transform.Position = new Vector2f(GameSettings.WindowWidth / 2, GameSettings.WindowHeight / 2);
+            debug.Transform.Position = new Vector2f(200, 200);
 
             DebugComponent debugComponent = debug.AddComponent<DebugComponent>();
-            debugComponent.Extents = new Vector2f(GameSettings.WindowWidth - 10, GameSettings.WindowHeight - 10);
+            debugComponent.Extents = new Vector2f(100, 100);
 
             return debug;
         }
 
-        private GameObject CreateTriangleObject(string name, Vector3f[] positions, Vector3f[] colors, Vector2f[] textureCoordinates)
+        private GameObject CreateTestQuad()
         {
-            float minX = (positions.Min(v => v.X) + 1) / 2f;
-            float minY = (positions.Min(v => v.Y) + 1) / 2f;
-            float maxX = (positions.Max(v => v.X) + 1) / 2f;
-            float maxY = (positions.Max(v => v.Y) + 1) / 2f;
+            GameObject gameObject = GameObjectManager.CreateGameObject("Test Quad");
 
-            FloatRect bounds = new FloatRect(
-                minX * GameSettings.WindowWidth,
-                minY * GameSettings.WindowHeight,
-                (maxX - minX) * GameSettings.WindowWidth,
-                (maxY - minY) * GameSettings.WindowHeight
-                );
+            Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
+            drawable3dComponent.Vertices = new[]
+            {
+                // Y is flipped due to difference in SFML texture origin (?)
 
-            GameObject triangle = GameObjectManager.CreateGameObject(name);
-            triangle.Transform.Position = new Vector2f(
-                bounds.Left + bounds.Width / 2,
-                bounds.Top + bounds.Height / 2
-                );
+                // Position         Texture coordinates
+                0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top right
+                 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, // bottom right
+                -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom left
+                -0.5f,  0.5f, 0.0f, 0.0f, 0.0f  // top left
+            };
 
-            DebugComponent debugComponent = triangle.AddComponent<DebugComponent>();
-            debugComponent.Extents = new Vector2f(bounds.Width, bounds.Height);
+            drawable3dComponent.Indices = new uint[]
+            {
+                0, 1, 3,
+                1, 2, 3
+            };
 
-            Test3dComponent drawable3dComponent = triangle.AddComponent<Test3dComponent>();
-            drawable3dComponent.Positions = positions;
-            drawable3dComponent.Colors = colors;
-            drawable3dComponent.TextureCoordinates = textureCoordinates;
             drawable3dComponent.TextureId = (int)GameSettings.TextureId.TestPattern;
 
             drawable3dComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
             drawable3dComponent.FragmentShaderId = (int)GameSettings.ShaderId.DefaultFragment;
 
-            return triangle;
+            return gameObject;
         }
 
         public override void OnDestroy()
