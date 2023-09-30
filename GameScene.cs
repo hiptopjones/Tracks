@@ -38,9 +38,16 @@ namespace Tracks
                 new Vector3f(0.0f, 0.0f, 1.0f)
             };
 
+            Vector2f[] textureCoordinates = new[]
+            {
+                // Y is flipped due to difference in SFML texture origin (?)
+                new Vector2f(0.0f, 1.0f),
+                new Vector2f(1.0f, 1.0f),
+                new Vector2f(0.5f, 0.0f)
+            };
 
-            CreateTriangleObject("Left Triangle", leftTrianglePositions, triangleColors);
-            CreateTriangleObject("Right Triangle", rightTrianglePositions, triangleColors);
+            CreateTriangleObject("Left Triangle", leftTrianglePositions, triangleColors, textureCoordinates);
+            CreateTriangleObject("Right Triangle", rightTrianglePositions, triangleColors, textureCoordinates);
         }
 
         private GameObject CreateDebugObject()
@@ -54,7 +61,7 @@ namespace Tracks
             return debug;
         }
 
-        private GameObject CreateTriangleObject(string name, Vector3f[] positions, Vector3f[] colors)
+        private GameObject CreateTriangleObject(string name, Vector3f[] positions, Vector3f[] colors, Vector2f[] textureCoordinates)
         {
             float minX = (positions.Min(v => v.X) + 1) / 2f;
             float minY = (positions.Min(v => v.Y) + 1) / 2f;
@@ -80,6 +87,8 @@ namespace Tracks
             Test3dComponent drawable3dComponent = triangle.AddComponent<Test3dComponent>();
             drawable3dComponent.Positions = positions;
             drawable3dComponent.Colors = colors;
+            drawable3dComponent.TextureCoordinates = textureCoordinates;
+            drawable3dComponent.TextureId = (int)GameSettings.TextureId.TestPattern;
 
             drawable3dComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
             drawable3dComponent.FragmentShaderId = (int)GameSettings.ShaderId.DefaultFragment;

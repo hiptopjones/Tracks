@@ -28,6 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\Textures\TestPattern.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

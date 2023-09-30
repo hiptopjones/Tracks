@@ -27,6 +27,9 @@ namespace Tracks
         public const string SplashScreenTextureFileName = "Splash.png";
         public const float SplashScreenTransitionDelaySeconds = 2;
 
+        // Test Pattern
+        public const string TestPatternTextureFileName = "TestPattern.png";
+
         // Shaders
         public const string DefaultVertexShaderFileName = "Default.vert";
         public const string DefaultFragmentShaderFileName = "Default.frag";
@@ -40,12 +43,14 @@ namespace Tracks
         // Textures
         public enum TextureId
         {
-            SplashScreen
+            SplashScreen,
+            TestPattern
         }
 
         public static readonly Dictionary<int, string> Textures = new Dictionary<int, string>
         {
             { (int)TextureId.SplashScreen, SplashScreenTextureFileName },
+            { (int)TextureId.TestPattern, TestPatternTextureFileName },
         };
 
         // Fonts
