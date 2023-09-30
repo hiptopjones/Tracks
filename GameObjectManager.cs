@@ -13,8 +13,8 @@ namespace Tracks
 
         // Systems
         private CoreSystem CoreSystem { get; } = new CoreSystem();
+        private GraphicsSystem GraphicsSystem { get; } = new GraphicsSystem();
         private DrawableSystem DrawableSystem { get; } = new DrawableSystem();
-        //private CollisionSystem CollisionSystem { get; } = new CollisionSystem();
 
         // Double Buffer (to prevent race conditions)
         private bool IsUsingFirstCollection { get; set; }
@@ -53,7 +53,6 @@ namespace Tracks
             ProcessAdditions();
 
             CoreSystem.Update(deltaTime);
-            //CollisionSystem.Update();
         }
 
         public void LateUpdate(float deltaTime)
@@ -61,16 +60,15 @@ namespace Tracks
             CoreSystem.LateUpdate(deltaTime);
         }
 
-        public void Draw(GraphicsManager graphicsManager)
+        public void Render()
         {
-            DrawableSystem.Draw(graphicsManager);
+            GraphicsSystem.Render();
+            DrawableSystem.Draw();
         }
 
         private void ProcessRemovals()
         {
             CoreSystem.ProcessRemovals();
-            DrawableSystem.ProcessRemovals();
-            //CollisionSystem.ProcessRemovals();
         }
 
         private void ProcessAdditions()
@@ -102,8 +100,8 @@ namespace Tracks
             }
 
             CoreSystem.ProcessAdditions(addedGameObjects);
+            GraphicsSystem.ProcessAdditions(addedGameObjects);
             DrawableSystem.ProcessAdditions(addedGameObjects);
-            //CollisionSystem.ProcessAdditions(addedGameObjects);
 
             addedGameObjects.Clear();
         }

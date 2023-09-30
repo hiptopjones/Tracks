@@ -1,11 +1,4 @@
 ﻿using NLog;
-using SFML.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Tracks
 {
     internal class DrawableSystem
@@ -27,13 +20,13 @@ namespace Tracks
             Utilities.DeleteWithSwapAndPop(DrawableComponents, x => !x.Owner.IsAlive);
         }
 
-        public void Draw(GraphicsManager graphicsManager)
+        public void Draw()
         {
             foreach (DrawableComponent drawableComponent in DrawableComponents.OrderBy(x => x.SortingOrder))
             {
                 if (drawableComponent.Owner.IsEnabled)
                 {
-                    drawableComponent.Draw(graphicsManager);
+                    drawableComponent.Draw();
                 }
             }
         }

@@ -35,8 +35,8 @@ namespace Tracks
             float scaleXY = Math.Max(scaleX, scaleY);
             Sprite.Scale = new Vector2f(scaleXY, scaleXY);
 
-            GraphicsManager graphicsManager = ServiceLocator.Instance.GetService<GraphicsManager>();
-            Sprite.Position = new Vector2f(graphicsManager.Width, graphicsManager.Height) * 0.5f;
+            WindowManager windowManager = ServiceLocator.Instance.GetService<WindowManager>();
+            Sprite.Position = new Vector2f(windowManager.Width, windowManager.Height) * 0.5f;
         }
 
         public override void OnDestroy()
@@ -68,9 +68,10 @@ namespace Tracks
             // Nothing
         }
 
-        public override void Draw(GraphicsManager graphicsManager)
+        public override void Render()
         {
-            graphicsManager.Draw(Sprite);
+            WindowManager windowManager = ServiceLocator.Instance.GetService<WindowManager>();
+            windowManager.Draw(Sprite);
         }
     }
 }

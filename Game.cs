@@ -6,12 +6,12 @@ namespace Tracks
     {
         private InputManager InputManager { get; set; }
         private ResourceManager ResourceManager { get; set; }
-        private GraphicsManager GraphicsManager { get; set; }
+        private WindowManager WindowManager { get; set; }
         private TimeManager TimeManager { get; set; }
         private SceneManager SceneManager { get; set; }
         private CoroutineManager CoroutineManager { get; set; }
 
-        public bool IsRunning => GraphicsManager.IsOpen;
+        public bool IsRunning => WindowManager.IsOpen;
 
         public Game()
         {
@@ -32,14 +32,14 @@ namespace Tracks
             SceneManager = new SceneManager();
             ServiceLocator.Instance.ProvideService(SceneManager);
 
-            GraphicsManager = new GraphicsManager(GameSettings.GameName, GameSettings.WindowWidth, GameSettings.WindowHeight);
-            GraphicsManager.WindowLostFocus += InputManager.OnWindowLostFocus;
-            GraphicsManager.KeyPressed += InputManager.OnKeyPressed;
-            GraphicsManager.KeyReleased += InputManager.OnKeyReleased;
-            GraphicsManager.MouseMoved += InputManager.OnMouseMoved;
-            GraphicsManager.MouseButtonPressed += InputManager.OnMouseButtonPressed;
-            GraphicsManager.MouseButtonReleased += InputManager.OnMouseButtonReleased;
-            ServiceLocator.Instance.ProvideService(GraphicsManager);
+            WindowManager = new WindowManager(GameSettings.GameName, GameSettings.WindowWidth, GameSettings.WindowHeight);
+            WindowManager.WindowLostFocus += InputManager.OnWindowLostFocus;
+            WindowManager.KeyPressed += InputManager.OnKeyPressed;
+            WindowManager.KeyReleased += InputManager.OnKeyReleased;
+            WindowManager.MouseMoved += InputManager.OnMouseMoved;
+            WindowManager.MouseButtonPressed += InputManager.OnMouseButtonPressed;
+            WindowManager.MouseButtonReleased += InputManager.OnMouseButtonReleased;
+            ServiceLocator.Instance.ProvideService(WindowManager);
 
             CoroutineManager = new CoroutineManager();
             ServiceLocator.Instance.ProvideService(CoroutineManager);
@@ -67,11 +67,11 @@ namespace Tracks
 
         public void ProcessEvents()
         {
-            GraphicsManager.ProcessEvents();
+            WindowManager.ProcessEvents();
 
             if (InputManager.IsKeyPressed(Key.Escape))
             {
-                GraphicsManager.Close();
+                WindowManager.Close();
             }
         }
 
@@ -90,13 +90,13 @@ namespace Tracks
             SceneManager.LateUpdate(deltaTime);
         }
 
-        public void Draw()
+        public void Render()
         {
-            GraphicsManager.BeginDraw();
+            WindowManager.BeginDraw();
 
-            SceneManager.Draw(GraphicsManager);
+            SceneManager.Render();
 
-            GraphicsManager.EndDraw();
+            WindowManager.EndDraw();
         }
     }
 }

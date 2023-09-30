@@ -22,9 +22,19 @@ namespace Tracks
         private GameObject CreateDummyObject()
         {
             GameObject dummy = GameObjectManager.CreateGameObject("Dummy");
-            dummy.Transform.Position = new Vector2f(200, 200);
+            dummy.Transform.Position = new Vector2f(600, 600);
 
             DebugComponent debugComponent = dummy.AddComponent<DebugComponent>();
+
+            GraphicsComponent graphicsComponent = dummy.AddComponent<GraphicsComponent>();
+            graphicsComponent.Vertices = new[] {
+                -0.5f, -0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+                0.0f,  0.5f, 0.0f
+            };
+
+            graphicsComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
+            graphicsComponent.FragmentShaderId = (int)GameSettings.ShaderId.DefaultFragment;
 
             return dummy;
         }
@@ -54,9 +64,9 @@ namespace Tracks
             GameObjectManager.LateUpdate(deltaTime);
         }
 
-        public override void Draw(GraphicsManager graphicsManager)
+        public override void Render()
         {
-            GameObjectManager.Draw(graphicsManager);
+            GameObjectManager.Render();
         }
     }
 }

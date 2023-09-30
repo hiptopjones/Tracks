@@ -53,11 +53,13 @@ namespace Tracks
             Logger.Error(message);
         }
 
-        public static void Draw(GraphicsManager graphicsManager)
+        public static void Render()
         {
+            WindowManager windowManager = ServiceLocator.Instance.GetService<WindowManager>();
+
             foreach (Drawable drawable in Drawables)
             {
-                graphicsManager.Draw(drawable);
+                windowManager.Draw(drawable);
             }
 
             // Clear on every frame after drawing

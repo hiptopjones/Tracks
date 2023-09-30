@@ -26,11 +26,16 @@ namespace Tracks
         // Splash
         public const string SplashScreenTextureFileName = "Splash.png";
         public const float SplashScreenTransitionDelaySeconds = 2;
-        
+
+        // Shaders
+        public const string DefaultVertexShaderFileName = "Default.vert";
+        public const string DefaultFragmentShaderFileName = "Default.frag";
+
         // Resources
         public const string ResourcesDirectoryName = "Assets";
         public const string TexturesDirectoryName = "Textures";
         public const string FontsDirectoryName = "Fonts";
+        public const string ShadersDirectoryName = "Shaders";
 
         // Textures
         public enum TextureId
@@ -52,6 +57,19 @@ namespace Tracks
         public static readonly Dictionary<int, string> Fonts = new Dictionary<int, string>
         {
             { (int)FontId.Debug, DebugFontFileName },
+        };
+
+        // Shaders
+        public enum ShaderId
+        {
+            DefaultVertex,
+            DefaultFragment
+        }
+
+        public static readonly Dictionary<int, string> Shaders = new Dictionary<int, string>
+        {
+            { (int)ShaderId.DefaultVertex, DefaultVertexShaderFileName },
+            { (int)ShaderId.DefaultFragment, DefaultFragmentShaderFileName },
         };
     }
 }

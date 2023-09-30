@@ -11,6 +11,6 @@ namespace Tracks
         // Lower numbers are drawn first
         public int SortingOrder { get; set; }
 
-        public abstract void Draw(GraphicsManager graphicsManager);
+        public abstract void Draw();
     }
 }

@@ -1,15 +1,19 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using NLog;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using SFML.Graphics;
 using SFML.Window;
+using System.Runtime.InteropServices;
 using MouseButtonEventArgs = SFML.Window.MouseButtonEventArgs;
 using MouseMoveEventArgs = SFML.Window.MouseMoveEventArgs;
 
 namespace Tracks
 {
-    internal class GraphicsManager
+    internal class WindowManager
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         public event EventHandler<KeyEventArgs> KeyPressed;
         public event EventHandler<KeyEventArgs> KeyReleased;
         public event EventHandler<MouseMoveEventArgs> MouseMoved;
@@ -24,29 +28,32 @@ namespace Tracks
         public uint Width { get; set; }
         public uint Height { get; set; }
 
-        private VideoMode VideoMode { get; }
-
         private RenderWindow RenderWindow { get; }
         private GameWindow GameWindow { get; }
 
-        public GraphicsManager(string windowName, uint windowWidth, uint windowHeight)
+        private static DebugProc DebugMessageDelegate = OnDebugMessage;
+
+        public WindowManager(string windowName, uint windowWidth, uint windowHeight)
         {
             Width = windowWidth;
             Height = windowHeight;
 
-            GameWindowSettings gameWindowSettings = new GameWindowSettings();
+            GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
             NativeWindowSettings nativeWindowSettings = new NativeWindowSettings
             {
                 APIVersion = Version.Parse("3.3"),
-                Profile = ContextProfile.Core
+                Profile = ContextProfile.Any,
+                Flags = ContextFlags.Debug
             };
 
             GameWindow = new GameWindow(gameWindowSettings, nativeWindowSettings);
             GameWindow.IsVisible = false;
 
+            GL.DebugMessageCallback(DebugMessageDelegate, IntPtr.Zero);
+            GL.Enable(EnableCap.DebugOutput);
+
             VideoMode videoMode = new VideoMode(Width, Height);
-            RenderWindow = new RenderWindow(videoMode, windowName, Styles.Titlebar | Styles.Close);
-            RenderWindow.SetVerticalSyncEnabled(true);
+            RenderWindow = new RenderWindow(videoMode, windowName);
 
             RenderWindow.Closed += OnClosed;
             RenderWindow.Resized += OnResized;
@@ -78,7 +85,7 @@ namespace Tracks
         public void EndDraw()
         {
             // Draw any debug graphics on top of everything before displaying the scene
-            Debug.Draw(this);
+            Debug.Render();
 
             RenderWindow.Display();
         }
@@ -96,7 +103,6 @@ namespace Tracks
         private void OnResized(object sender, SizeEventArgs e)
         {
             RenderWindow.SetView(new View(new FloatRect(0, 0, e.Width, e.Height)));
-            GL.Viewport(0, 0, (int)e.Width, (int)e.Height);
         }
 
         private void OnLostFocus(object sender, EventArgs e)
@@ -129,5 +135,21 @@ namespace Tracks
             MouseButtonReleased?.Invoke(sender, e);
         }
 
+        private static void OnDebugMessage(
+            DebugSource source,     // Source of the debugging message.
+            DebugType type,         // Type of the debugging message.
+            int id,                 // ID associated with the message.
+            DebugSeverity severity, // Severity of the message.
+            int length,             // Length of the string in pMessage.
+            IntPtr pMessage,        // Pointer to message string.
+            IntPtr pUserParam)      // The pointer you gave to OpenGL, explained later.
+        {
+            // In order to access the string pointed to by pMessage, you can use Marshal
+            // class to copy its contents to a C# string without unsafe code. You can
+            // also use the new function Marshal.PtrToStringUTF8 since .NET Core 1.1.
+            string message = Marshal.PtrToStringAnsi(pMessage, length);
+
+            Logger.Error("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
+        }
     }
 }
