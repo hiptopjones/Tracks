@@ -64,7 +64,9 @@ namespace Tracks
             };
         }
 
-        // Called exactly once when the object is initialized
+        /// <summary>
+        /// Called exactly once when the object is initialized
+        /// </summary>
         public void Awake()
         {
             for (int i = Components.Count - 1; i >= 0; i--)
@@ -73,7 +75,9 @@ namespace Tracks
             }
         }
 
-        // Called each time the object is enabled
+        /// <summary>
+        /// Called each time the object is enabled
+        /// </summary>
         public void OnEnable()
         {
             for (int i = Components.Count - 1; i >= 0; i--)
@@ -82,7 +86,9 @@ namespace Tracks
             }
         }
 
-        // Called exactly once when the object is enabled
+        /// <summary>
+        /// Called exactly once when the object is enabled
+        /// </summary>
         public void Start()
         {
             for (int i = Components.Count - 1; i >= 0; i--)
@@ -91,7 +97,10 @@ namespace Tracks
             }
         }
 
-        // Called every frame
+        /// <summary>
+        /// Called every frame
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Update(float deltaTime)
         {
             for (int i = Components.Count - 1; i >= 0; i--)
@@ -100,7 +109,10 @@ namespace Tracks
             }
         }
 
-        // Called every frame (after all Update() calls complete)
+        /// <summary>
+        /// Called every frame (after all Update() calls complete)
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void LateUpdate(float deltaTime)
         {
             for (int i = Components.Count - 1; i >= 0; i--)
@@ -109,7 +121,9 @@ namespace Tracks
             }
         }
 
-        // Called each time the object is disabled
+        /// <summary>
+        /// Called each time the object is disabled
+        /// </summary>
         public void OnDisable()
         {
             for (int i = Components.Count - 1; i >= 0; i--)
@@ -118,7 +132,9 @@ namespace Tracks
             }
         }
 
-        // Intended to re-initialize any component state back to post Start() values
+        /// <summary>
+        /// Intended to re-initialize any component state back to post Start() values
+        /// </summary>
         public void Reset()
         {
             for (int i = Components.Count - 1; i >= 0; i--)
@@ -127,7 +143,9 @@ namespace Tracks
             }
         }
 
-        // Takes this object out of service
+        /// <summary>
+        /// Takes this object out of service
+        /// </summary>
         public void Destroy()
         {
             // Use redirection to enable object pooling
