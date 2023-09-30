@@ -68,7 +68,7 @@ namespace Tracks
             // Nothing
         }
 
-        public override void Render()
+        public override void Draw()
         {
             WindowManager windowManager = ServiceLocator.Instance.GetService<WindowManager>();
             windowManager.Draw(Sprite);

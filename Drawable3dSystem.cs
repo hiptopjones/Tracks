@@ -8,32 +8,32 @@ using System.Threading.Tasks;
 
 namespace Tracks
 {
-    internal class GraphicsSystem
+    internal class Drawable3dSystem
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        private List<GraphicsComponent> GraphicsComponents { get; } = new List<GraphicsComponent>();
+        private List<Drawable3dComponent> DrawableComponents { get; } = new List<Drawable3dComponent>();
 
         public void ProcessAdditions(IEnumerable<GameObject> newGameObjects)
         {
-            GraphicsComponents.AddRange(newGameObjects
-                .SelectMany(x => x.GetComponents<GraphicsComponent>())
+            DrawableComponents.AddRange(newGameObjects
+                .SelectMany(x => x.GetComponents<Drawable3dComponent>())
                 .Where(x => x != null));
         }
 
         public void ProcessRemovals()
         {
             // Remove any objects from consideration that are dead
-            Utilities.DeleteWithSwapAndPop(GraphicsComponents, x => !x.Owner.IsAlive);
+            Utilities.DeleteWithSwapAndPop(DrawableComponents, x => !x.Owner.IsAlive);
         }
 
-        public void Render()
+        public void Draw()
         {
-            foreach (GraphicsComponent graphicsComponent in GraphicsComponents)
+            foreach (Drawable3dComponent drawableComponent in DrawableComponents)
             {
-                if (graphicsComponent.Owner.IsEnabled)
+                if (drawableComponent.Owner.IsEnabled)
                 {
-                    graphicsComponent.Render();
+                    drawableComponent.Draw();
                 }
             }
         }

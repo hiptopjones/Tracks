@@ -24,9 +24,9 @@ namespace Tracks
             CurrentScene?.LateUpdate(deltaTime);
         }
 
-        public void Render()
+        public void Draw()
         {
-            CurrentScene?.Render();
+            CurrentScene?.Draw();
         }
 
         public int AddScene(Scene scene)

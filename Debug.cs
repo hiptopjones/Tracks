@@ -53,7 +53,7 @@ namespace Tracks
             Logger.Error(message);
         }
 
-        public static void Render()
+        public static void Draw()
         {
             WindowManager windowManager = ServiceLocator.Instance.GetService<WindowManager>();
 

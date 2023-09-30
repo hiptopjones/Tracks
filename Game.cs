@@ -90,11 +90,11 @@ namespace Tracks
             SceneManager.LateUpdate(deltaTime);
         }
 
-        public void Render()
+        public void Draw()
         {
             WindowManager.BeginDraw();
 
-            SceneManager.Render();
+            SceneManager.Draw();
 
             WindowManager.EndDraw();
         }

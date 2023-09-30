@@ -1,16 +1,16 @@
 ﻿using NLog;
 namespace Tracks
 {
-    internal class DrawableSystem
+    internal class Drawable2dSystem
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        private List<DrawableComponent> DrawableComponents { get; } = new List<DrawableComponent>();
+        private List<Drawable2dComponent> DrawableComponents { get; } = new List<Drawable2dComponent>();
 
         public void ProcessAdditions(IEnumerable<GameObject> newGameObjects)
         {
             DrawableComponents.AddRange(newGameObjects
-                .SelectMany(x => x.GetComponents<DrawableComponent>())
+                .SelectMany(x => x.GetComponents<Drawable2dComponent>())
                 .Where(x => x != null));
         }
 
@@ -22,7 +22,7 @@ namespace Tracks
 
         public void Draw()
         {
-            foreach (DrawableComponent drawableComponent in DrawableComponents.OrderBy(x => x.SortingOrder))
+            foreach (Drawable2dComponent drawableComponent in DrawableComponents.OrderBy(x => x.SortingOrder))
             {
                 if (drawableComponent.Owner.IsEnabled)
                 {

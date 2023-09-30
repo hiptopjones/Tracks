@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Tracks
 {
-    internal class GraphicsComponent : Component
+    internal class Test3dComponent : Drawable3dComponent
     {
         public float[] Vertices { get; set; }
         public float[] Colors { get; set; }
@@ -61,7 +61,7 @@ namespace Tracks
             GL.BindVertexArray(vertexArrayId);
         }
 
-        public void Render()
+        public override void Draw()
         {
             GL.UseProgram(ShaderProgram.ProgramId);
             GL.BindVertexArray(VertexArrayId);

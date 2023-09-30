@@ -26,15 +26,15 @@ namespace Tracks
 
             DebugComponent debugComponent = dummy.AddComponent<DebugComponent>();
 
-            GraphicsComponent graphicsComponent = dummy.AddComponent<GraphicsComponent>();
-            graphicsComponent.Vertices = new[] {
+            Test3dComponent drawable3dComponent = dummy.AddComponent<Test3dComponent>();
+            drawable3dComponent.Vertices = new[] {
                 -0.5f, -0.5f, 0.0f,
                 0.5f, -0.5f, 0.0f,
                 0.0f,  0.5f, 0.0f
             };
 
-            graphicsComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
-            graphicsComponent.FragmentShaderId = (int)GameSettings.ShaderId.DefaultFragment;
+            drawable3dComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
+            drawable3dComponent.FragmentShaderId = (int)GameSettings.ShaderId.DefaultFragment;
 
             return dummy;
         }
@@ -64,9 +64,9 @@ namespace Tracks
             GameObjectManager.LateUpdate(deltaTime);
         }
 
-        public override void Render()
+        public override void Draw()
         {
-            GameObjectManager.Render();
+            GameObjectManager.Draw();
         }
     }
 }

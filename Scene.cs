@@ -21,6 +21,6 @@ namespace Tracks
 
         public abstract void LateUpdate(float deltaTime);
 
-        public abstract void Render();
+        public abstract void Draw();
     }
 }

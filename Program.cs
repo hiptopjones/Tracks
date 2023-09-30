@@ -12,7 +12,7 @@
                 game.ProcessEvents();
                 game.Update();
                 game.LateUpdate();
-                game.Render();
+                game.Draw();
             }
         }
     }

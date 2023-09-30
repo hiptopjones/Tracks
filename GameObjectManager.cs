@@ -13,8 +13,8 @@ namespace Tracks
 
         // Systems
         private CoreSystem CoreSystem { get; } = new CoreSystem();
-        private GraphicsSystem GraphicsSystem { get; } = new GraphicsSystem();
-        private DrawableSystem DrawableSystem { get; } = new DrawableSystem();
+        private Drawable3dSystem Drawable3dSystem { get; } = new Drawable3dSystem();
+        private Drawable2dSystem Drawable2dSystem { get; } = new Drawable2dSystem();
 
         // Double Buffer (to prevent race conditions)
         private bool IsUsingFirstCollection { get; set; }
@@ -60,10 +60,12 @@ namespace Tracks
             CoreSystem.LateUpdate(deltaTime);
         }
 
-        public void Render()
+        public void Draw()
         {
-            GraphicsSystem.Render();
-            DrawableSystem.Draw();
+            // Always draw 3D before 2D
+            // (2D is for UI and other chrome that overlays the scene)
+            Drawable3dSystem.Draw();
+            Drawable2dSystem.Draw();
         }
 
         private void ProcessRemovals()
@@ -100,8 +102,8 @@ namespace Tracks
             }
 
             CoreSystem.ProcessAdditions(addedGameObjects);
-            GraphicsSystem.ProcessAdditions(addedGameObjects);
-            DrawableSystem.ProcessAdditions(addedGameObjects);
+            Drawable3dSystem.ProcessAdditions(addedGameObjects);
+            Drawable2dSystem.ProcessAdditions(addedGameObjects);
 
             addedGameObjects.Clear();
         }
