@@ -27,10 +27,17 @@ namespace Tracks
             DebugComponent debugComponent = dummy.AddComponent<DebugComponent>();
 
             Test3dComponent drawable3dComponent = dummy.AddComponent<Test3dComponent>();
-            drawable3dComponent.Vertices = new[] {
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.0f,  0.5f, 0.0f
+            drawable3dComponent.Positions = new[] {
+                new Vector3f(-0.5f, -0.5f, 0.0f),
+                new Vector3f(0.5f, -0.5f, 0.0f),
+                new Vector3f(0.0f,  0.5f, 0.0f)
+            };
+
+            drawable3dComponent.Colors = new[]
+            {
+                new Vector3f(1.0f, 0.0f, 0.0f),
+                new Vector3f(0.0f, 1.0f, 0.0f),
+                new Vector3f(0.0f, 0.0f, 1.0f)
             };
 
             drawable3dComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
