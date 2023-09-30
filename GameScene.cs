@@ -1,7 +1,6 @@
 ﻿using NLog;
 using SFML.Graphics;
 using SFML.System;
-using System.Numerics;
 
 namespace Tracks
 {
@@ -16,34 +15,76 @@ namespace Tracks
             GameObjectManager = new GameObjectManager();
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
-            CreateDummyObject();
-        }
+            CreateDebugObject();
 
-        private GameObject CreateDummyObject()
-        {
-            GameObject dummy = GameObjectManager.CreateGameObject("Dummy");
-            dummy.Transform.Position = new Vector2f(600, 600);
-
-            DebugComponent debugComponent = dummy.AddComponent<DebugComponent>();
-
-            Test3dComponent drawable3dComponent = dummy.AddComponent<Test3dComponent>();
-            drawable3dComponent.Positions = new[] {
-                new Vector3f(-0.5f, -0.5f, 0.0f),
-                new Vector3f(0.5f, -0.5f, 0.0f),
-                new Vector3f(0.0f,  0.5f, 0.0f)
+            Vector3f[] leftTrianglePositions = new[]
+            {
+                new Vector3f(-0.5f, -0.25f, 0.0f),
+                new Vector3f(0.0f, -0.25f, 0.0f),
+                new Vector3f(-0.25f, 0.25f, 0.0f)
             };
 
-            drawable3dComponent.Colors = new[]
+            Vector3f[] rightTrianglePositions = new[]
+            {
+                new Vector3f(0.0f, -0.25f, 0.0f),
+                new Vector3f(0.5f, -0.25f, 0.0f),
+                new Vector3f(0.25f,  0.25f, 0.0f)
+            };
+
+            Vector3f[] triangleColors = new[]
             {
                 new Vector3f(1.0f, 0.0f, 0.0f),
                 new Vector3f(0.0f, 1.0f, 0.0f),
                 new Vector3f(0.0f, 0.0f, 1.0f)
             };
 
+
+            CreateTriangleObject("Left Triangle", leftTrianglePositions, triangleColors);
+            CreateTriangleObject("Right Triangle", rightTrianglePositions, triangleColors);
+        }
+
+        private GameObject CreateDebugObject()
+        {
+            GameObject debug = GameObjectManager.CreateGameObject("Debug");
+            debug.Transform.Position = new Vector2f(GameSettings.WindowWidth / 2, GameSettings.WindowHeight / 2);
+
+            DebugComponent debugComponent = debug.AddComponent<DebugComponent>();
+            debugComponent.Extents = new Vector2f(GameSettings.WindowWidth - 10, GameSettings.WindowHeight - 10);
+
+            return debug;
+        }
+
+        private GameObject CreateTriangleObject(string name, Vector3f[] positions, Vector3f[] colors)
+        {
+            float minX = (positions.Min(v => v.X) + 1) / 2f;
+            float minY = (positions.Min(v => v.Y) + 1) / 2f;
+            float maxX = (positions.Max(v => v.X) + 1) / 2f;
+            float maxY = (positions.Max(v => v.Y) + 1) / 2f;
+
+            FloatRect bounds = new FloatRect(
+                minX * GameSettings.WindowWidth,
+                minY * GameSettings.WindowHeight,
+                (maxX - minX) * GameSettings.WindowWidth,
+                (maxY - minY) * GameSettings.WindowHeight
+                );
+
+            GameObject triangle = GameObjectManager.CreateGameObject(name);
+            triangle.Transform.Position = new Vector2f(
+                bounds.Left + bounds.Width / 2,
+                bounds.Top + bounds.Height / 2
+                );
+
+            DebugComponent debugComponent = triangle.AddComponent<DebugComponent>();
+            debugComponent.Extents = new Vector2f(bounds.Width, bounds.Height);
+
+            Test3dComponent drawable3dComponent = triangle.AddComponent<Test3dComponent>();
+            drawable3dComponent.Positions = positions;
+            drawable3dComponent.Colors = colors;
+
             drawable3dComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
             drawable3dComponent.FragmentShaderId = (int)GameSettings.ShaderId.DefaultFragment;
 
-            return dummy;
+            return triangle;
         }
 
         public override void OnDestroy()

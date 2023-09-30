@@ -5,12 +5,14 @@ namespace Tracks
 {
     internal class DebugComponent : Component
     {
+        public Vector2f Extents { get; set; }
+
         public override void Update(float deltaTime)
         {
-            FloatRect rect = new FloatRect(Owner.Transform.Position, new Vector2f(100, 100));
-            Debug.DrawRect(rect, Color.Blue);
+            FloatRect rect = new FloatRect(Owner.Transform.Position - Extents / 2, Extents);
+            Debug.DrawRect(rect, Color.Magenta);
 
-            Debug.DrawText(Owner.Name, Owner.Transform.Position, Color.Red);
+            Debug.DrawText(Owner.Name, Owner.Transform.Position - Extents / 2, Color.Magenta);
         }
     }
 }
