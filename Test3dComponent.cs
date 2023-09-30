@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using SFML.Graphics;
 using SFML.System;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
@@ -114,6 +115,16 @@ namespace Tracks
             GL.UseProgram(ShaderProgram.ProgramId);
             GL.BindTexture(TextureTarget.Texture2D, Texture.NativeHandle);
             GL.BindVertexArray(VertexArrayId);
+
+            // Rudimentary animation by creating and setting a transform based on the current time
+            float seconds = (float)(DateTime.Now.TimeOfDay.TotalSeconds);
+            float degreesPerSecond = 90;
+            Matrix4 transform = Matrix4.Identity;
+            transform *= Matrix4.CreateScale((float)Math.Pow(4, Math.Sin(MathHelper.DegreesToRadians(seconds * degreesPerSecond))));
+            transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(seconds * degreesPerSecond));
+            transform *= Matrix4.CreateTranslation(new Vector3((float)Math.Sin(MathHelper.DegreesToRadians(seconds * degreesPerSecond)) * 0.5f, 0, 0));
+            int transformLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "transform");
+            GL.UniformMatrix4(transformLocation, true, ref transform);
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, VertexCount / 3);
 
