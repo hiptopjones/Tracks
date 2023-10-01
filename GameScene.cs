@@ -15,19 +15,18 @@ namespace Tracks
             GameObjectManager = new GameObjectManager();
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
-            Create2dObject();
+            CreateDiagnostics();
             CreateTestQuad();
         }
 
-        private GameObject Create2dObject()
+        private GameObject CreateDiagnostics()
         {
-            GameObject debug = GameObjectManager.CreateGameObject("Debug");
-            debug.Transform.Position = new Vector2f(200, 200);
+            GameObject gameObject = GameObjectManager.CreateGameObject("Diagnostics");
+            gameObject.Transform.Position = new Vector2f(20, 20);
 
-            DebugComponent debugComponent = debug.AddComponent<DebugComponent>();
-            debugComponent.Extents = new Vector2f(100, 100);
+            DiagnosticsComponent diagnosticsComponent = gameObject.AddComponent<DiagnosticsComponent>();
 
-            return debug;
+            return gameObject;
         }
 
         private GameObject CreateTestQuad()
