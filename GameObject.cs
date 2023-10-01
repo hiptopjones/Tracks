@@ -46,6 +46,8 @@ namespace Tracks
 
         public Action<GameObject> OnDestroyed;
 
+        public int ComponentCount => Components.Count;
+
         private List<Component> Components { get; } = new List<Component>();
 
         public GameObject()

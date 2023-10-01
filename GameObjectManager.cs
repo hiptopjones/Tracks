@@ -11,6 +11,9 @@ namespace Tracks
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
+        public int GameObjectCount => CoreSystem.GameObjectCount;
+        public int ComponentCount => CoreSystem.ComponentCount;
+
         // Systems
         private CoreSystem CoreSystem { get; } = new CoreSystem();
         private Drawable3dSystem Drawable3dSystem { get; } = new Drawable3dSystem();

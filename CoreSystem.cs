@@ -10,6 +10,9 @@ namespace Tracks
     {
         private List<GameObject> GameObjects { get; } = new List<GameObject>();
 
+        public int GameObjectCount => GameObjects.Count;
+        public int ComponentCount => GameObjects.Sum(x => x.ComponentCount);
+
         public void ProcessAdditions(IEnumerable<GameObject> newGameObjects)
         {
             GameObjects.AddRange(newGameObjects);

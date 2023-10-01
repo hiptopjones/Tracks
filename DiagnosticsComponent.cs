@@ -6,15 +6,17 @@ namespace Tracks
 {
     internal class DiagnosticsComponent : Component
     {
-        private TimeManager TimeManager { get; set; }
-        private Process CurrentProcess { get; set; }
+        public Vector2f RowOffset { get; } = new Vector2f(0, 20);
+        public Vector2f ColumnOffset { get; } = new Vector2f(60, 0);
 
-        private Vector2f RowOffset { get; } = new Vector2f(0, 20);
-        private Vector2f ColumnOffset { get; } = new Vector2f(60, 0);
+        private TimeManager TimeManager { get; set; }
+        private GameObjectManager GameObjectManager { get; set; }
+        private Process CurrentProcess { get; set; }
 
         public override void Awake()
         {
             TimeManager = ServiceLocator.Instance.GetService<TimeManager>();
+            GameObjectManager = ServiceLocator.Instance.GetService<GameObjectManager>();
             CurrentProcess = Process.GetCurrentProcess();
         }
 
@@ -45,12 +47,20 @@ namespace Tracks
             string memoryUsage = GetMemoryUsage();
             Debug.DrawText("MEM", labelPosition, Color.Magenta);
             Debug.DrawText(memoryUsage, valuePosition, Color.White);
-        }
 
-        private string GetMemoryUsage()
-        {
-            double memoryUsage = CurrentProcess.WorkingSet64 / 1000d / 1000d;
-            return $"{memoryUsage:F1}M";
+            labelPosition += ColumnOffset;
+            valuePosition = labelPosition + RowOffset;
+
+            string numObjects = GetObjectCount();
+            Debug.DrawText("OBJ", labelPosition, Color.Magenta);
+            Debug.DrawText(numObjects, valuePosition, Color.White);
+
+            labelPosition += ColumnOffset;
+            valuePosition = labelPosition + RowOffset;
+
+            string numComponents = GetComponentCount();
+            Debug.DrawText("CMP", labelPosition, Color.Magenta);
+            Debug.DrawText(numComponents, valuePosition, Color.White);
         }
 
         private string GetFps()
@@ -67,6 +77,24 @@ namespace Tracks
             double cpuUsage = totalUsedTime / totalAvailableTime * 100.0;
 
             return $"{cpuUsage:F1}%";
+        }
+
+        private string GetMemoryUsage()
+        {
+            double memoryUsage = CurrentProcess.WorkingSet64 / 1000d / 1000d;
+            return $"{memoryUsage:F1}M";
+        }
+
+        private string GetObjectCount()
+        {
+            int gameObjectCount = GameObjectManager.GameObjectCount;
+            return $"{gameObjectCount}";
+        }
+
+        private string GetComponentCount()
+        {
+            int componentCount = GameObjectManager.ComponentCount;
+            return $"{componentCount}";
         }
     }
 }
