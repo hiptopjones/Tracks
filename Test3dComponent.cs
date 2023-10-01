@@ -19,6 +19,7 @@ namespace Tracks
         private int VertexBufferId { get; set; }
         private int ElementBufferId { get; set; }
         private int VertexCount { get; set; }
+        private bool UseElementArray { get; set; }
 
         private ShaderProgram ShaderProgram { get; set; }
         private Texture Texture { get; set; }
@@ -36,7 +37,7 @@ namespace Tracks
 
         private void InitializeVertexBufferObject()
         {
-            VertexCount = Vertices.Length;
+            VertexCount = Vertices.Length / 5;
 
             // Generate and bind a vertex array object
             GL.GenVertexArrays(1, out int vertexArrayId);
@@ -51,13 +52,17 @@ namespace Tracks
             // Load vertex data into the buffer
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
 
-            // Generate and bind an element buffer object
-            GL.GenBuffers(1, out int elementBufferId);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferId);
-            ElementBufferId = elementBufferId;
+            UseElementArray = Indices != null && Indices.Any();
+            if (UseElementArray)
+            {
+                // Generate and bind an element buffer object
+                GL.GenBuffers(1, out int elementBufferId);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferId);
+                ElementBufferId = elementBufferId;
 
-            // Load vertex data into the buffer
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
+                // Load vertex data into the buffer
+                GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
+            }
 
             // Specify the layout of the vertex data
             int positionLocation = 0;
@@ -98,7 +103,14 @@ namespace Tracks
             int projectionLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "projection");
             GL.UniformMatrix4(projectionLocation, true, ref projection);
 
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
+            if (UseElementArray)
+            {
+                GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
+            }
+            else
+            {
+                GL.DrawArrays(PrimitiveType.Triangles, 0, VertexCount);
+            }
 
             GL.BindVertexArray(0);  
             GL.BindTexture(TextureTarget.Texture2D, 0);
@@ -110,14 +122,15 @@ namespace Tracks
             const float degreesPerSecond = 90;
 
             Matrix4 model = Matrix4.Identity;
-            model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)ElapsedTime.TotalSeconds * degreesPerSecond));
+            model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)ElapsedTime.TotalSeconds * degreesPerSecond) * 1.0f);
+            model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)ElapsedTime.TotalSeconds * degreesPerSecond) * 0.5f);
             return model;
         }
 
         private Matrix4 GetViewMatrix()
         {
             // Move back slightly
-            Matrix4 view = Matrix4.CreateTranslation(0.0f, 0.09f, -3.0f);
+            Matrix4 view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
             return view;
         }
 

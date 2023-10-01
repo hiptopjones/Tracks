@@ -49,11 +49,13 @@ namespace Tracks
             GameWindow = new GameWindow(gameWindowSettings, nativeWindowSettings);
             GameWindow.IsVisible = false;
 
-            GL.DebugMessageCallback(DebugMessageDelegate, IntPtr.Zero);
-            GL.Enable(EnableCap.DebugOutput);
-
             VideoMode videoMode = new VideoMode(Width, Height);
-            RenderWindow = new RenderWindow(videoMode, windowName);
+            ContextSettings contextSettings = new ContextSettings
+            {
+                DepthBits = 24,   
+            };
+
+            RenderWindow = new RenderWindow(videoMode, windowName, Styles.Default, contextSettings);
 
             RenderWindow.Closed += OnClosed;
             RenderWindow.Resized += OnResized;
@@ -65,6 +67,11 @@ namespace Tracks
             RenderWindow.MouseButtonReleased += OnMouseButtonReleased;
 
             RenderWindow.SetActive(true);
+
+            GL.DebugMessageCallback(DebugMessageDelegate, IntPtr.Zero);
+            GL.Enable(EnableCap.DebugOutput);
+
+            GL.Enable(EnableCap.DepthTest);
         }
 
         public void ProcessEvents()
@@ -75,11 +82,17 @@ namespace Tracks
         public void BeginDraw()
         {
             RenderWindow.Clear(GameSettings.WindowClearColor);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         public void Draw(Drawable drawable)
         {
+            RenderWindow.PushGLStates();
+            RenderWindow.ResetGLStates();
+
             RenderWindow.Draw(drawable);
+            
+            RenderWindow.PopGLStates();
         }
 
         public void EndDraw()
