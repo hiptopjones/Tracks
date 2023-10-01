@@ -1,23 +1,13 @@
-﻿using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tracks
+﻿namespace Tracks
 {
     internal class GameObjectManager
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
         public int GameObjectCount => CoreSystem.GameObjectCount;
         public int ComponentCount => CoreSystem.ComponentCount;
 
         // Systems
         private CoreSystem CoreSystem { get; } = new CoreSystem();
         private Drawable3dSystem Drawable3dSystem { get; } = new Drawable3dSystem();
-        private Drawable2dSystem Drawable2dSystem { get; } = new Drawable2dSystem();
 
         // Double Buffer (to prevent race conditions)
         private bool IsUsingFirstCollection { get; set; }
@@ -65,10 +55,7 @@ namespace Tracks
 
         public void Draw()
         {
-            // Always draw 3D before 2D
-            // (2D is for UI and other chrome that overlays the scene)
             Drawable3dSystem.Draw();
-            Drawable2dSystem.Draw();
         }
 
         private void ProcessRemovals()
@@ -106,7 +93,6 @@ namespace Tracks
 
             CoreSystem.ProcessAdditions(addedGameObjects);
             Drawable3dSystem.ProcessAdditions(addedGameObjects);
-            Drawable2dSystem.ProcessAdditions(addedGameObjects);
 
             addedGameObjects.Clear();
         }

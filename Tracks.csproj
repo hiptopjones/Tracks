@@ -8,23 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Fonts\unispace rg.ttf" />
-    <None Remove="Assets\Textures\Splash.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\Fonts\unispace rg.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Textures\Splash.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Remove="Assets\Textures\Splash - Copy.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.2.4" />
     <PackageReference Include="OpenTK" Version="4.8.1" />
-    <PackageReference Include="SFML.Net" Version="2.5.1" />
+    <PackageReference Include="StbImageSharp" Version="2.27.13" />
   </ItemGroup>
 
   <ItemGroup>

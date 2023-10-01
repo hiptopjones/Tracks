@@ -1,4 +1,4 @@
-﻿using static SFML.Window.Keyboard;
+﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Tracks
 {
@@ -33,12 +33,9 @@ namespace Tracks
             ServiceLocator.Instance.ProvideService(SceneManager);
 
             WindowManager = new WindowManager(GameSettings.GameName, GameSettings.WindowWidth, GameSettings.WindowHeight);
-            WindowManager.WindowLostFocus += InputManager.OnWindowLostFocus;
-            WindowManager.KeyPressed += InputManager.OnKeyPressed;
-            WindowManager.KeyReleased += InputManager.OnKeyReleased;
-            WindowManager.MouseMoved += InputManager.OnMouseMoved;
-            WindowManager.MouseButtonPressed += InputManager.OnMouseButtonPressed;
-            WindowManager.MouseButtonReleased += InputManager.OnMouseButtonReleased;
+            WindowManager.FocusChanged += InputManager.OnWindowFocusChanged;
+            WindowManager.KeyDown += InputManager.OnKeyDown;
+            WindowManager.KeyUp += InputManager.OnKeyUp;
             ServiceLocator.Instance.ProvideService(WindowManager);
 
             CoroutineManager = new CoroutineManager();
@@ -52,11 +49,6 @@ namespace Tracks
             GameScene gameScene = new GameScene();
             int gameSceneId = SceneManager.AddScene(gameScene);
 
-            SplashScreenScene splashScene = new SplashScreenScene();
-            splashScene.TransitionSceneId = gameSceneId;
-            int splashSceneId = SceneManager.AddScene(splashScene);
-
-            //SceneManager.SwitchTo(splashSceneId);
             SceneManager.SwitchTo(gameSceneId);
         }
 
@@ -70,7 +62,7 @@ namespace Tracks
         {
             WindowManager.ProcessEvents();
 
-            if (InputManager.IsKeyPressed(Key.Escape))
+            if (InputManager.IsKeyPressed(Keys.Escape))
             {
                 WindowManager.Close();
             }

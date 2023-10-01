@@ -1,4 +1,4 @@
-﻿using SFML.System;
+﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +9,15 @@ namespace Tracks
 {
     internal class TransformComponent : Component
     {
-        public Vector2f Position { get; set; } = new Vector2f();
-        public float Rotation { get; set; }
-        public Vector2f Scale { get; set; } = new Vector2f(1, 1);
+        public Vector3 Position { get; set; } = new Vector3();
+        public Vector3 Rotation { get; set; } = new Vector3();
+        public Vector3 Scale { get; set; } = new Vector3(1, 1, 1);
 
         public override void Reset()
         {
-            Vector2f position = Position;
-            position.X = 0;
-            position.Y = 0;
-            Position = position;
-
-            Rotation = 0;
-
-            Vector2f scale = Scale;
-            scale.X = 1;
-            scale.Y = 1;
-            Scale = scale;
+            Position = new Vector3();
+            Rotation = new Vector3();
+            Scale = new Vector3();
         }
 
         public override string ToString()

@@ -1,18 +1,7 @@
-﻿using NLog;
-using SFML.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tracks
+﻿namespace Tracks
 {
     internal class GameObjectPool
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
         private enum PoolState
         {
             Active,

@@ -1,31 +1,19 @@
-﻿using SFML.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Tracks.GameSettings;
-
-namespace Tracks
+﻿namespace Tracks
 {
     internal class ResourceManager
     {
         public string ResourcesDirectory { get; }
         public string TexturesDirectory { get; }
-        public string FontsDirectory { get; }
         public string ShadersDirectory { get; }
         
         private Dictionary<int, Texture> Textures { get; } = new Dictionary<int, Texture>();
 
-        private Dictionary<int, Font> Fonts { get; } = new Dictionary<int, Font>();
-
-        private Dictionary<string, ShaderProgram> ShaderPrograms { get; } = new Dictionary<string, ShaderProgram>();
+        private Dictionary<string, Shader> ShaderPrograms { get; } = new Dictionary<string, Shader>();
 
         public ResourceManager()
         {
             ResourcesDirectory = Path.Combine(Environment.CurrentDirectory, GameSettings.ResourcesDirectoryName);
             TexturesDirectory = Path.Combine(ResourcesDirectory, GameSettings.TexturesDirectoryName);
-            FontsDirectory = Path.Combine(ResourcesDirectory, GameSettings.FontsDirectoryName);
             ShadersDirectory = Path.Combine(ResourcesDirectory, GameSettings.ShadersDirectoryName);
         }
 
@@ -39,7 +27,7 @@ namespace Tracks
                 }
 
                 string textureFilePath = Path.Combine(TexturesDirectory, textureFileName);
-                texture = new Texture(textureFilePath);
+                texture = Texture.LoadFromFile(textureFilePath);
 
                 Textures[textureId] = texture;
             }
@@ -47,29 +35,11 @@ namespace Tracks
             return texture;
         }
 
-        public Font GetFont(int fontId)
-        {
-            if (!Fonts.TryGetValue(fontId, out Font font))
-            {
-                if (!GameSettings.Fonts.TryGetValue(fontId, out string fontFileName))
-                {
-                    throw new Exception($"Unable to locate a file path for font: {fontId}");
-                }
-
-                string fontFilePath = Path.Combine(FontsDirectory, fontFileName);
-                font = new Font(fontFilePath);
-
-                Fonts[fontId] = font;
-            }
-
-            return font;
-        }
-
-        public ShaderProgram GetShaderProgram(int vertexShaderId, int fragmentShaderId)
+        public Shader GetShader(int vertexShaderId, int fragmentShaderId)
         {
             string shaderProgramKey = $"{vertexShaderId}/{fragmentShaderId}";
 
-            if (!ShaderPrograms.TryGetValue(shaderProgramKey, out ShaderProgram shaderProgram))
+            if (!ShaderPrograms.TryGetValue(shaderProgramKey, out Shader shaderProgram))
             {
                 if (!GameSettings.Shaders.TryGetValue(vertexShaderId, out string vertexShaderFileName))
                 {
@@ -84,7 +54,7 @@ namespace Tracks
                 string vertexShaderFilePath = Path.Combine(ShadersDirectory, vertexShaderFileName);
                 string fragmentShaderFilePath = Path.Combine(ShadersDirectory, fragmentShaderFileName);
 
-                shaderProgram = new ShaderProgram(vertexShaderFilePath, fragmentShaderFilePath);
+                shaderProgram = Shader.LoadFromFile(vertexShaderFilePath, fragmentShaderFilePath);
 
                 ShaderPrograms[shaderProgramKey] = shaderProgram;
             }

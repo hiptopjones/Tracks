@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tracks
+﻿namespace Tracks
 {
     internal abstract class Component
     {
+        /// <summary>
+        /// The game object to which this component is attached
+        /// </summary>
         public GameObject Owner { get; set; }
 
         /// <summary>

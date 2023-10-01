@@ -1,29 +1,28 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Tracks.GameSettings;
 
 namespace Tracks
 {
-    internal class ShaderProgram
+    internal class Shader
     {
-        public int ProgramId { get; }
+        public int ProgramId { get; private set; }
 
-        public ShaderProgram(string vertexShaderFilePath, string fragmentShaderFilePath)
+        public static Shader LoadFromFile(string vertexShaderFilePath, string fragmentShaderFilePath)
         {
             int vertexShaderId = LoadShader(ShaderType.VertexShader, vertexShaderFilePath);
             int fragmentShaderId = LoadShader(ShaderType.FragmentShader, fragmentShaderFilePath);
 
-            ProgramId = LinkShaders(vertexShaderId, fragmentShaderId);
+            int programId = LinkShaders(vertexShaderId, fragmentShaderId);
 
             UnloadShader(vertexShaderId);
             UnloadShader(fragmentShaderId);
+
+            return new Shader
+            {
+                ProgramId = programId
+            };
         }
 
-        private int LoadShader(ShaderType shaderType, string shaderFilePath)
+        private static int LoadShader(ShaderType shaderType, string shaderFilePath)
         {
             string shaderText = File.ReadAllText(shaderFilePath);
 
@@ -41,12 +40,12 @@ namespace Tracks
             return shaderId;
         }
 
-        private void UnloadShader(int shaderId)
+        private static void UnloadShader(int shaderId)
         {
             GL.DeleteShader(shaderId);
         }
 
-        private int LinkShaders(int vertexShaderId, int fragmentShaderId)
+        private static int LinkShaders(int vertexShaderId, int fragmentShaderId)
         {
             int programId = GL.CreateProgram();
             GL.AttachShader(programId, vertexShaderId);

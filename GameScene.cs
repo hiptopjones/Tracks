@@ -1,13 +1,7 @@
-﻿using NLog;
-using SFML.Graphics;
-using SFML.System;
-
-namespace Tracks
+﻿namespace Tracks
 {
     internal class GameScene : Scene
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
         protected GameObjectManager GameObjectManager { get; set; }
 
         public override void OnCreate()
@@ -15,18 +9,7 @@ namespace Tracks
             GameObjectManager = new GameObjectManager();
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
-            CreateDiagnostics();
             CreateTestQuad();
-        }
-
-        private GameObject CreateDiagnostics()
-        {
-            GameObject gameObject = GameObjectManager.CreateGameObject("Diagnostics");
-            gameObject.Transform.Position = new Vector2f(20, 20);
-
-            DiagnosticsComponent diagnosticsComponent = gameObject.AddComponent<DiagnosticsComponent>();
-
-            return gameObject;
         }
 
         private GameObject CreateTestQuad()
@@ -36,9 +19,7 @@ namespace Tracks
             Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
             drawable3dComponent.Vertices = new[]
             {
-                // Y is flipped due to difference in SFML texture origin (?)
-
-                // Position         Texture coordinates
+                // Position           Texture coordinates
                 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
                  0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
                  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,

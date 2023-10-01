@@ -1,7 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using SFML.Graphics;
-using SFML.System;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 
 namespace Tracks
@@ -21,7 +19,7 @@ namespace Tracks
         private int VertexCount { get; set; }
         private bool UseElementArray { get; set; }
 
-        private ShaderProgram ShaderProgram { get; set; }
+        private Shader Shader { get; set; }
         private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; } = ServiceLocator.Instance.GetService<ResourceManager>();
 
@@ -29,7 +27,7 @@ namespace Tracks
 
         public override void Awake()
         {
-            ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
+            Shader = ResourceManager.GetShader(VertexShaderId, FragmentShaderId);
             Texture = ResourceManager.GetTexture(TextureId);
 
             InitializeVertexBufferObject();
@@ -40,27 +38,21 @@ namespace Tracks
             VertexCount = Vertices.Length / 5;
 
             // Generate and bind a vertex array object
-            GL.GenVertexArrays(1, out int vertexArrayId);
-            GL.BindVertexArray(vertexArrayId);
-            VertexArrayId = vertexArrayId;
+            VertexArrayId = GL.GenVertexArray();
+            GL.BindVertexArray(VertexArrayId);
 
             // Generate and bind a vertex buffer object
-            GL.GenBuffers(1, out int vertexBufferId);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferId);
-            VertexBufferId = vertexBufferId;
-
-            // Load vertex data into the buffer
+            int VertexBufferId = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferId);
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
 
+            // Only use element buffers if indices were provided
             UseElementArray = Indices != null && Indices.Any();
             if (UseElementArray)
             {
                 // Generate and bind an element buffer object
-                GL.GenBuffers(1, out int elementBufferId);
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferId);
-                ElementBufferId = elementBufferId;
-
-                // Load vertex data into the buffer
+                int ElementBufferId = GL.GenBuffer();
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferId);
                 GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
             }
 
@@ -77,7 +69,7 @@ namespace Tracks
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             // Unbind the vertex array object (also unbinds element buffer)
-            GL.BindVertexArray(vertexArrayId);
+            GL.BindVertexArray(0);
         }
 
         public override void Update(float deltaTime)
@@ -87,20 +79,20 @@ namespace Tracks
 
         public override void Draw()
         {
-            GL.UseProgram(ShaderProgram.ProgramId);
-            GL.BindTexture(TextureTarget.Texture2D, Texture.NativeHandle);
+            GL.UseProgram(Shader.ProgramId);
+            GL.BindTexture(TextureTarget.Texture2D, Texture.TextureId);
             GL.BindVertexArray(VertexArrayId);
 
             Matrix4 model = GetModelMatrix();
-            int modelLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "model");
+            int modelLocation = GL.GetUniformLocation(Shader.ProgramId, "model");
             GL.UniformMatrix4(modelLocation, true, ref model);
 
             Matrix4 view = GetViewMatrix();
-            int viewLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "view");
+            int viewLocation = GL.GetUniformLocation(Shader.ProgramId, "view");
             GL.UniformMatrix4(viewLocation, true, ref view);
 
             Matrix4 projection = GetProjectionMatrix();
-            int projectionLocation = GL.GetUniformLocation(ShaderProgram.ProgramId, "projection");
+            int projectionLocation = GL.GetUniformLocation(Shader.ProgramId, "projection");
             GL.UniformMatrix4(projectionLocation, true, ref projection);
 
             if (UseElementArray)

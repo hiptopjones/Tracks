@@ -1,9 +1,4 @@
-﻿using SFML.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenTK.Mathematics;
 
 namespace Tracks
 {
@@ -14,13 +9,13 @@ namespace Tracks
         // Window
         public const int WindowWidth = 800;
         public const int WindowHeight = 600;
-        public static readonly Color WindowClearColor = new Color(30, 30, 30);
+        public static readonly Color4 WindowClearColor = new Color4(30, 30, 30, 0);
 
         // Stats
         public const int StatsFpsSampleCount = 100;
 
         // Debug
-        public static readonly Color DebugDefaultColor = Color.Magenta;
+        public static readonly Color4 DebugDefaultColor = Color4.Magenta;
         public const string DebugFontFileName = "unispace rg.ttf";
 
         // Splash

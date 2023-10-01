@@ -1,104 +1,59 @@
-﻿using SFML.System;
-using SFML.Window;
+﻿using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Tracks
 {
     internal class InputManager
     {
-        private HashSet<Keyboard.Key> KeyPressed { get; set; } = new HashSet<Keyboard.Key>();
-        private HashSet<Keyboard.Key> KeyDown { get; set; } = new HashSet<Keyboard.Key>();
-        private HashSet<Keyboard.Key> KeyUp { get; set; } = new HashSet<Keyboard.Key>();
+        private HashSet<Keys> KeyPressed { get; set; } = new HashSet<Keys>();
+        private HashSet<Keys> KeyDown { get; set; } = new HashSet<Keys>();
+        private HashSet<Keys> KeyUp { get; set; } = new HashSet<Keys>();
 
-        private HashSet<Mouse.Button> MouseButtonPressed { get; set; } = new HashSet<Mouse.Button>();
-        private HashSet<Mouse.Button> MouseButtonDown { get; set; } = new HashSet<Mouse.Button>();
-        private HashSet<Mouse.Button> MouseButtonUp { get; set; } = new HashSet<Mouse.Button>();
-
-        public Vector2f MousePosition { get; private set; }
- 
         public void OnFrameStarted()
         {
             // These start fresh on every frame
             KeyUp.Clear();
             KeyDown.Clear();
-
-            MouseButtonUp.Clear();
-            MouseButtonDown.Clear();
         }
 
-        public void OnWindowLostFocus(object sender, EventArgs e)
+        public void OnWindowFocusChanged(object sender, FocusedChangedEventArgs e)
         {
-            KeyPressed.Clear();
-            MouseButtonPressed.Clear();
-        }
-
-        public bool IsKeyPressed(Keyboard.Key keycode)
-        {
-            return KeyPressed.Contains(keycode);
-        }
-
-        public bool IsKeyDown(Keyboard.Key keycode)
-        {
-            return KeyDown.Contains(keycode);
-        }
-
-        public bool IsKeyUp(Keyboard.Key keycode)
-        {
-            return KeyUp.Contains(keycode);
-        }
-
-        public void OnKeyPressed(object sender, KeyEventArgs e)
-        {
-            if (!KeyPressed.Contains(e.Code))
+            if (!e.IsFocused)
             {
-                KeyPressed.Add(e.Code);
-                KeyDown.Add(e.Code);
+                KeyPressed.Clear();
             }
         }
 
-        public void OnKeyReleased(object sender, KeyEventArgs e)
+        public bool IsKeyPressed(Keys key)
         {
-            if (KeyPressed.Contains(e.Code))
+            return KeyPressed.Contains(key);
+        }
+
+        public bool IsKeyDown(Keys key)
+        {
+            return KeyDown.Contains(key);
+        }
+
+        public bool IsKeyUp(Keys key)
+        {
+            return KeyUp.Contains(key);
+        }
+
+        public void OnKeyDown(object sender, KeyboardKeyEventArgs e)
+        {
+            if (!KeyPressed.Contains(e.Key))
             {
-                KeyPressed.Remove(e.Code);
-                KeyUp.Add(e.Code);
+                KeyPressed.Add(e.Key);
+                KeyDown.Add(e.Key);
             }
         }
 
-        public void OnMouseMoved(object sender, MouseMoveEventArgs e)
+        public void OnKeyUp(object sender, KeyboardKeyEventArgs e)
         {
-            MousePosition = new Vector2f(e.X, e.Y);
-        }
-
-        public bool IsMouseButtonPressed(Mouse.Button button)
-        {
-            return MouseButtonPressed.Contains(button);
-        }
-
-        public bool IsMouseButtonDown(Mouse.Button button)
-        {
-            return MouseButtonDown.Contains(button);
-        }
-
-        public bool IsMouseButtonUp(Mouse.Button button)
-        {
-            return MouseButtonUp.Contains(button);
-        }
-
-        public void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)
-        {
-            if (!MouseButtonPressed.Contains(e.Button))
+            if (KeyPressed.Contains(e.Key))
             {
-                MouseButtonPressed.Add(e.Button);
-                MouseButtonDown.Add(e.Button);
-            }
-        }
-
-        public void OnMouseButtonReleased(object sender, MouseButtonEventArgs e)
-        {
-            if (MouseButtonPressed.Contains(e.Button))
-            {
-                MouseButtonPressed.Remove(e.Button);
-                MouseButtonUp.Add(e.Button);
+                KeyPressed.Remove(e.Key);
+                KeyUp.Add(e.Key);
             }
         }
     }

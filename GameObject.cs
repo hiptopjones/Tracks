@@ -1,10 +1,4 @@
 ﻿using NLog;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tracks
 {
@@ -171,7 +165,7 @@ namespace Tracks
             }
             else
             {
-                Logger.Info($"Component of type {typeof(T).Name} already exists on object '{Name}'");
+                Logger.Error($"Component of type {typeof(T).Name} already exists on object '{Name}'");
             }
 
             return component;
