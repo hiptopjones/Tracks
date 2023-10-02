@@ -1,6 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 
 namespace Tracks
 {
@@ -13,13 +12,13 @@ namespace Tracks
         public int FragmentShaderId { get; set; }
         public int TextureId { get; set; }
 
-        private int VertexArrayId { get; set; }
-        private int VertexBufferId { get; set; }
-        private int ElementBufferId { get; set; }
+        private int VertexArrayHandle { get; set; }
+        private int VertexBufferHandle { get; set; }
+        private int ElementBufferHandle { get; set; }
         private int VertexCount { get; set; }
         private bool UseElementArray { get; set; }
 
-        private Shader Shader { get; set; }
+        private ShaderProgram Shader { get; set; }
         private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; } = ServiceLocator.Instance.GetService<ResourceManager>();
 
@@ -27,7 +26,7 @@ namespace Tracks
 
         public override void Awake()
         {
-            Shader = ResourceManager.GetShader(VertexShaderId, FragmentShaderId);
+            Shader = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
             Texture = ResourceManager.GetTexture(TextureId);
 
             InitializeVertexBufferObject();
@@ -38,12 +37,12 @@ namespace Tracks
             VertexCount = Vertices.Length / 5;
 
             // Generate and bind a vertex array object
-            VertexArrayId = GL.GenVertexArray();
-            GL.BindVertexArray(VertexArrayId);
+            VertexArrayHandle = GL.GenVertexArray();
+            GL.BindVertexArray(VertexArrayHandle);
 
             // Generate and bind a vertex buffer object
-            int VertexBufferId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferId);
+            VertexBufferHandle = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferHandle);
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
 
             // Only use element buffers if indices were provided
@@ -51,19 +50,19 @@ namespace Tracks
             if (UseElementArray)
             {
                 // Generate and bind an element buffer object
-                int ElementBufferId = GL.GenBuffer();
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferId);
+                ElementBufferHandle = GL.GenBuffer();
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferHandle);
                 GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
             }
 
             // Specify the layout of the vertex data
-            int positionLocation = 0;
-            GL.VertexAttribPointer(positionLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(positionLocation);
+            int positionAttribHandle = 0;
+            GL.VertexAttribPointer(positionAttribHandle, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(positionAttribHandle);
 
-            int textureLocation = 1;
-            GL.VertexAttribPointer(textureLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(textureLocation);
+            int textureCoordinatesAttribHandle = 1;
+            GL.VertexAttribPointer(textureCoordinatesAttribHandle, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(textureCoordinatesAttribHandle);
 
             // Unbind the vertex buffer object (does not affect vertex array)
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -79,21 +78,21 @@ namespace Tracks
 
         public override void Draw()
         {
-            GL.UseProgram(Shader.ProgramId);
-            GL.BindTexture(TextureTarget.Texture2D, Texture.TextureId);
-            GL.BindVertexArray(VertexArrayId);
+            GL.UseProgram(Shader.Handle);
+            GL.BindTexture(TextureTarget.Texture2D, Texture.Handle);
+            GL.BindVertexArray(VertexArrayHandle);
 
             Matrix4 model = GetModelMatrix();
-            int modelLocation = GL.GetUniformLocation(Shader.ProgramId, "model");
-            GL.UniformMatrix4(modelLocation, true, ref model);
+            int modelUniformHandle = GL.GetUniformLocation(Shader.Handle, "model");
+            GL.UniformMatrix4(modelUniformHandle, false, ref model);
 
             Matrix4 view = GetViewMatrix();
-            int viewLocation = GL.GetUniformLocation(Shader.ProgramId, "view");
-            GL.UniformMatrix4(viewLocation, true, ref view);
+            int viewUniformHandle = GL.GetUniformLocation(Shader.Handle, "view");
+            GL.UniformMatrix4(viewUniformHandle, false, ref view);
 
             Matrix4 projection = GetProjectionMatrix();
-            int projectionLocation = GL.GetUniformLocation(Shader.ProgramId, "projection");
-            GL.UniformMatrix4(projectionLocation, true, ref projection);
+            int projectionUniformHandle = GL.GetUniformLocation(Shader.Handle, "projection");
+            GL.UniformMatrix4(projectionUniformHandle, false, ref projection);
 
             if (UseElementArray)
             {
@@ -122,13 +121,15 @@ namespace Tracks
         private Matrix4 GetViewMatrix()
         {
             // Move back slightly
-            Matrix4 view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
+            Matrix4 view = Matrix4.Identity;
+            view *= Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
             return view;
         }
 
         private Matrix4 GetProjectionMatrix()
         {
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), GameSettings.WindowWidth / (float)GameSettings.WindowHeight, 0.1f, 100.0f);
+            Matrix4 projection = Matrix4.Identity;
+            projection *= Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), GameSettings.WindowWidth / (float)GameSettings.WindowHeight, 0.1f, 100.0f);
             return projection;
         }
     }

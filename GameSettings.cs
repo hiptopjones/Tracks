@@ -14,10 +14,6 @@ namespace Tracks
         // Stats
         public const int StatsFpsSampleCount = 100;
 
-        // Debug
-        public static readonly Color4 DebugDefaultColor = Color4.Magenta;
-        public const string DebugFontFileName = "unispace rg.ttf";
-
         // Splash
         public const string SplashScreenTextureFileName = "Splash.png";
         public const float SplashScreenTransitionDelaySeconds = 2;
@@ -28,6 +24,10 @@ namespace Tracks
         // Shaders
         public const string DefaultVertexShaderFileName = "Default.vert";
         public const string DefaultFragmentShaderFileName = "Default.frag";
+
+        // Sprites
+        public const string SpriteVertexShaderFileName = "Sprite.vert";
+        public const string SpriteFragmentShaderFileName = "Sprite.frag";
 
         // Resources
         public const string ResourcesDirectoryName = "Assets";
@@ -48,28 +48,21 @@ namespace Tracks
             { (int)TextureId.TestPattern, TestPatternTextureFileName },
         };
 
-        // Fonts
-        public enum FontId
-        {
-            Debug
-        }
-
-        public static readonly Dictionary<int, string> Fonts = new Dictionary<int, string>
-        {
-            { (int)FontId.Debug, DebugFontFileName },
-        };
-
         // Shaders
         public enum ShaderId
         {
             DefaultVertex,
-            DefaultFragment
+            DefaultFragment,
+            SpriteVertex,
+            SpriteFragment
         }
 
         public static readonly Dictionary<int, string> Shaders = new Dictionary<int, string>
         {
             { (int)ShaderId.DefaultVertex, DefaultVertexShaderFileName },
             { (int)ShaderId.DefaultFragment, DefaultFragmentShaderFileName },
+            { (int)ShaderId.SpriteVertex, SpriteVertexShaderFileName },
+            { (int)ShaderId.SpriteFragment, SpriteFragmentShaderFileName },
         };
     }
 }

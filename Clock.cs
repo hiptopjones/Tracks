@@ -9,7 +9,7 @@
         {
             DateTime currentTime = DateTime.Now;
 
-            TimeSpan elapsedTime = LastTime - currentTime;
+            TimeSpan elapsedTime = currentTime - LastTime;
             LastTime = currentTime;
 
             return elapsedTime;

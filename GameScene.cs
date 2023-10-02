@@ -1,4 +1,6 @@
-﻿namespace Tracks
+﻿using static Tracks.GameSettings;
+
+namespace Tracks
 {
     internal class GameScene : Scene
     {
@@ -63,10 +65,10 @@
                 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
             };
 
-            drawable3dComponent.TextureId = (int)GameSettings.TextureId.TestPattern;
+            drawable3dComponent.TextureId = (int)TextureId.TestPattern;
 
-            drawable3dComponent.VertexShaderId = (int)GameSettings.ShaderId.DefaultVertex;
-            drawable3dComponent.FragmentShaderId = (int)GameSettings.ShaderId.DefaultFragment;
+            drawable3dComponent.VertexShaderId = (int)ShaderId.DefaultVertex;
+            drawable3dComponent.FragmentShaderId = (int)ShaderId.DefaultFragment;
 
             return gameObject;
         }
