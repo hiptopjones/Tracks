@@ -68,6 +68,9 @@ namespace Tracks
 
         private void OnResized(ResizeEventArgs e)
         {
+            Width = e.Width;
+            Height = e.Height;
+
             GL.Viewport(0, 0, e.Width, e.Height);
         }
 

@@ -20,12 +20,16 @@ namespace Tracks
 
         private ShaderProgram Shader { get; set; }
         private Texture Texture { get; set; }
-        private ResourceManager ResourceManager { get; set; } = ServiceLocator.Instance.GetService<ResourceManager>();
+        private ResourceManager ResourceManager { get; set; }
+        private WindowManager WindowManager { get; set; }
 
         private TimeSpan ElapsedTime { get; set; }
 
         public override void Awake()
         {
+            ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
+            WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
+
             Shader = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
             Texture = ResourceManager.GetTexture(TextureId);
 
@@ -129,7 +133,7 @@ namespace Tracks
         private Matrix4 GetProjectionMatrix()
         {
             Matrix4 projection = Matrix4.Identity;
-            projection *= Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), GameSettings.WindowWidth / (float)GameSettings.WindowHeight, 0.1f, 100.0f);
+            projection *= Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), WindowManager.Width / (float)WindowManager.Height, 0.1f, 100.0f);
             return projection;
         }
     }

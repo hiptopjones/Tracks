@@ -29,10 +29,14 @@ namespace Tracks
         private int VertexCount { get; set; }
 
         private ShaderProgram ShaderProgram { get; set; }
-        private ResourceManager ResourceManager { get; set; } = ServiceLocator.Instance.GetService<ResourceManager>();
+        private ResourceManager ResourceManager { get; set; }
+        private WindowManager WindowManager { get; set; }
 
         public SpriteRenderer()
         {
+            ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
+            WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
+
             InitializeShaders();
             InitializeVertexBufferObject();
         }
@@ -111,7 +115,7 @@ namespace Tracks
 
         private Matrix4 GetProjectionMatrix()
         {
-            Matrix4 projection = Matrix4.CreateOrthographic(GameSettings.WindowWidth, GameSettings.WindowHeight, -1.0f, 1.0f);
+            Matrix4 projection = Matrix4.CreateOrthographic(WindowManager.Width, WindowManager.Height, -1.0f, 1.0f);
             return projection;
         }
     }
