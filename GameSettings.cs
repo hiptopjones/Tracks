@@ -20,14 +20,20 @@ namespace Tracks
 
         // Test Pattern
         public const string TestPatternTextureFileName = "TestPattern.png";
+        public const string TestPaletteTextureFileName = "TestPalette.png";
+
+        // Debug
+        public const string DebugFontTextureFileName = "CascadiaMono33.png";
+        public static readonly Vector2i DebugFontGlyphSize = new Vector2i(21, 28);
+        public const int DebugFontGlyphCount = 94;
 
         // Shaders
         public const string DefaultVertexShaderFileName = "Default.vert";
         public const string DefaultFragmentShaderFileName = "Default.frag";
-
-        // Sprites
         public const string SpriteVertexShaderFileName = "Sprite.vert";
         public const string SpriteFragmentShaderFileName = "Sprite.frag";
+        public const string TileVertexShaderFileName = "Tile.vert";
+        public const string TileFragmentShaderFileName = "Tile.frag";
 
         // Resources
         public const string ResourcesDirectoryName = "Assets";
@@ -39,13 +45,17 @@ namespace Tracks
         public enum TextureId
         {
             SplashScreen,
-            TestPattern
+            TestPattern,
+            TestPalette,
+            DebugFont,
         }
 
         public static readonly Dictionary<int, string> Textures = new Dictionary<int, string>
         {
             { (int)TextureId.SplashScreen, SplashScreenTextureFileName },
             { (int)TextureId.TestPattern, TestPatternTextureFileName },
+            { (int)TextureId.TestPalette, TestPaletteTextureFileName },
+            { (int)TextureId.DebugFont, DebugFontTextureFileName },
         };
 
         // Shaders
@@ -54,7 +64,9 @@ namespace Tracks
             DefaultVertex,
             DefaultFragment,
             SpriteVertex,
-            SpriteFragment
+            SpriteFragment,
+            TileVertex,
+            TileFragment,
         }
 
         public static readonly Dictionary<int, string> Shaders = new Dictionary<int, string>
@@ -63,6 +75,8 @@ namespace Tracks
             { (int)ShaderId.DefaultFragment, DefaultFragmentShaderFileName },
             { (int)ShaderId.SpriteVertex, SpriteVertexShaderFileName },
             { (int)ShaderId.SpriteFragment, SpriteFragmentShaderFileName },
+            { (int)ShaderId.TileVertex, TileVertexShaderFileName },
+            { (int)ShaderId.TileFragment, TileFragmentShaderFileName },
         };
     }
 }

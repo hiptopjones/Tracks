@@ -11,6 +11,8 @@ namespace Tracks
         private SceneManager SceneManager { get; set; }
         private CoroutineManager CoroutineManager { get; set; }
         private SpriteRenderer SpriteRenderer { get; set; }
+        private TileRenderer TileRenderer { get; set; }
+        private FontAtlas FontAtlas { get; set; }
 
         public bool IsRunning => WindowManager.IsOpen;
 
@@ -45,6 +47,12 @@ namespace Tracks
             SpriteRenderer = new SpriteRenderer();
             ServiceLocator.Instance.ProvideService(SpriteRenderer);
 
+            TileRenderer = new TileRenderer();
+            ServiceLocator.Instance.ProvideService(TileRenderer);
+
+            FontAtlas = new FontAtlas();
+            ServiceLocator.Instance.ProvideService(FontAtlas);
+
             InitializeScenes();
         }
 
@@ -59,6 +67,7 @@ namespace Tracks
             int splashSceneId = SceneManager.AddScene(splashScene);
 
             SceneManager.SwitchTo(splashSceneId);
+            //SceneManager.SwitchTo(gameSceneId);
         }
 
         public void StartFrame()

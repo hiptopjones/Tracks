@@ -1,4 +1,5 @@
-﻿using static Tracks.GameSettings;
+﻿using OpenTK.Mathematics;
+using static Tracks.GameSettings;
 
 namespace Tracks
 {
@@ -20,7 +21,7 @@ namespace Tracks
             ResourceManager resourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
 
             Texture texture = resourceManager.GetTexture(TextureId);
-            Sprite = new Sprite(texture);
+            Sprite = new Sprite(texture, Vector2.Zero, Vector2.One, new Vector2(texture.Width / 2, texture.Height / 2));
         }
 
         public override void OnDestroy()

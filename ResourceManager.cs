@@ -10,8 +10,9 @@ namespace Tracks
         public string ResourcesDirectory { get; }
         public string TexturesDirectory { get; }
         public string ShadersDirectory { get; }
-        
+
         private Dictionary<int, Texture> Textures { get; } = new Dictionary<int, Texture>();
+        private Dictionary<int, TextureArray> TextureArrays { get; } = new Dictionary<int, TextureArray>();
 
         private Dictionary<string, ShaderProgram> ShaderPrograms { get; } = new Dictionary<string, ShaderProgram>();
 
@@ -37,6 +38,26 @@ namespace Tracks
                 texture = Texture.LoadFromFile(textureFilePath);
 
                 Textures[textureId] = texture;
+            }
+
+            return texture;
+        }
+
+        public TextureArray GetTextureArray(int textureId, int tileWidth, int tileHeight, int tileCount)
+        {
+            if (!TextureArrays.TryGetValue(textureId, out TextureArray texture))
+            {
+                if (!GameSettings.Textures.TryGetValue(textureId, out string textureFileName))
+                {
+                    throw new Exception($"Unable to locate a file path for texture: {textureId}");
+                }
+
+                Logger.Info($"Loading texture array: {textureFileName}");
+
+                string textureFilePath = Path.Combine(TexturesDirectory, textureFileName);
+                texture = TextureArray.LoadFromFile(textureFilePath, tileWidth, tileHeight, tileCount);
+
+                TextureArrays[textureId] = texture;
             }
 
             return texture;

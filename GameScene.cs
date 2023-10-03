@@ -1,4 +1,5 @@
-﻿using static Tracks.GameSettings;
+﻿using OpenTK.Mathematics;
+using static Tracks.GameSettings;
 
 namespace Tracks
 {
@@ -11,7 +12,18 @@ namespace Tracks
             GameObjectManager = new GameObjectManager();
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
+            CreateDiagnostics();
             CreateTestQuad();
+        }
+
+        private GameObject CreateDiagnostics()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Diagnostics");
+            gameObject.Transform.Position = new Vector3(-400, 600, 0);
+
+            DiagnosticsComponent diagnosticsComponent = gameObject.AddComponent<DiagnosticsComponent>();
+
+            return gameObject;
         }
 
         private GameObject CreateTestQuad()

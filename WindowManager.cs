@@ -58,6 +58,9 @@ namespace Tracks
 
         public void EndDraw()
         {
+            // Draw any debug graphics on top of everything before displaying the scene
+            Debug.Draw();
+
             GameWindow.SwapBuffers();
         }
 
