@@ -21,6 +21,7 @@ namespace Tracks
         // Test Pattern
         public const string TestPatternTextureFileName = "TestPattern.png";
         public const string TestPaletteTextureFileName = "TestPalette.png";
+        public const string BlankTextureFileName = "Blank.png";
 
         // Debug
         public const string DebugFontTextureFileName = "CascadiaMono33.png";
@@ -47,6 +48,7 @@ namespace Tracks
             SplashScreen,
             TestPattern,
             TestPalette,
+            Blank,
             DebugFont,
         }
 
@@ -55,6 +57,7 @@ namespace Tracks
             { (int)TextureId.SplashScreen, SplashScreenTextureFileName },
             { (int)TextureId.TestPattern, TestPatternTextureFileName },
             { (int)TextureId.TestPalette, TestPaletteTextureFileName },
+            { (int)TextureId.Blank, BlankTextureFileName },
             { (int)TextureId.DebugFont, DebugFontTextureFileName },
         };
 
@@ -77,6 +80,52 @@ namespace Tracks
             { (int)ShaderId.SpriteFragment, SpriteFragmentShaderFileName },
             { (int)ShaderId.TileVertex, TileVertexShaderFileName },
             { (int)ShaderId.TileFragment, TileFragmentShaderFileName },
+        };
+
+        public static readonly float[] CubeVertices = new[]
+        {
+            // Position           Texture coordinates
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
         };
     }
 }

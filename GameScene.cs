@@ -13,7 +13,36 @@ namespace Tracks
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
             CreateDiagnostics();
-            CreateTestQuad();
+
+            GameObject camera = CreateMainCamera();
+            GameObject mobileCube = CreateMobileTestCube();
+
+            CreateStationaryTestCube(new Vector3(0, 0, 0), Vector3.Zero, 1, Color4.White);
+            CreateStationaryTestCube(new Vector3(0, 1, 0), Vector3.Zero, 1, Color4.Green);
+            CreateStationaryTestCube(new Vector3(1, 0, 0), Vector3.Zero, 1, Color4.Red);
+            CreateStationaryTestCube(new Vector3(0, 0, 1), Vector3.Zero, 1, Color4.Blue);
+
+            CameraComponent cameraComponent = camera.GetComponent<CameraComponent>();
+            cameraComponent.Target = mobileCube;
+        }
+
+        private GameObject CreateMainCamera()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Main Camera");
+            gameObject.Transform.Position = new Vector3(0, 0, -10);
+
+            KeyboardMoveComponent moveComponent = gameObject.AddComponent<KeyboardMoveComponent>();
+            moveComponent.Speed = 10f;
+
+            CameraComponent cameraComponent = gameObject.AddComponent<CameraComponent>();
+            cameraComponent.AspectRatio = GameSettings.WindowWidth / (float)GameSettings.WindowHeight;
+            cameraComponent.FieldOfView = 45f;
+            cameraComponent.NearClippingDistance = 0.1f;
+            cameraComponent.FarClippingDistance = 100f;
+
+            ServiceLocator.Instance.ProvideService<CameraComponent>(cameraComponent);
+
+            return gameObject;
         }
 
         private GameObject CreateDiagnostics()
@@ -25,57 +54,31 @@ namespace Tracks
 
             return gameObject;
         }
-
-        private GameObject CreateTestQuad()
+        private GameObject CreateStationaryTestCube(Vector3 position, Vector3 rotation, float scale, Color4 color)
         {
-            GameObject gameObject = GameObjectManager.CreateGameObject("Test Quad");
+            GameObject gameObject = GameObjectManager.CreateGameObject("Stationary Test Cube");
+            gameObject.Transform.Position = position;
+            gameObject.Transform.Rotation = rotation;
+            gameObject.Transform.Scale = Vector3.One * scale;
 
             Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
-            drawable3dComponent.Vertices = new[]
-            {
-                // Position           Texture coordinates
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+            drawable3dComponent.Vertices = GameSettings.CubeVertices;
 
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            drawable3dComponent.TextureId = (int)TextureId.Blank;
+            drawable3dComponent.Color = color;
 
-                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            drawable3dComponent.VertexShaderId = (int)ShaderId.DefaultVertex;
+            drawable3dComponent.FragmentShaderId = (int)ShaderId.DefaultFragment;
 
-                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            return gameObject;
+        }
+    
+        private GameObject CreateMobileTestCube()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Mobile Test Cube");
 
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-            };
+            Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
+            drawable3dComponent.Vertices = GameSettings.CubeVertices;
 
             drawable3dComponent.TextureId = (int)TextureId.TestPattern;
 

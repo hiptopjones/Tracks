@@ -11,6 +11,7 @@ namespace Tracks
         public event EventHandler<KeyboardKeyEventArgs> KeyDown;
         public event EventHandler<KeyboardKeyEventArgs> KeyUp;
         public event EventHandler<FocusedChangedEventArgs> FocusChanged;
+        public event EventHandler<ResizeEventArgs> Resized;
 
         public bool IsOpen => !GameWindow.IsExiting;
 
@@ -75,6 +76,8 @@ namespace Tracks
             Height = e.Height;
 
             GL.Viewport(0, 0, e.Width, e.Height);
+
+            Resized?.Invoke(this, e);
         }
 
         private void OnFocusChanged(FocusedChangedEventArgs e)

@@ -10,7 +10,6 @@ namespace Tracks
 
         private static List<Text> TextDrawables { get; } = new List<Text>();
         private static List<Sprite> SpriteDrawables { get; } = new List<Sprite>();
-        private static List<Tile> TileDrawables { get; } = new List<Tile>();
 
         public static void Log(string message)
         {

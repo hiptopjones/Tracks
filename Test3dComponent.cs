@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using System.Reflection;
 
 namespace Tracks
 {
@@ -11,6 +12,7 @@ namespace Tracks
         public int VertexShaderId { get; set; }
         public int FragmentShaderId { get; set; }
         public int TextureId { get; set; }
+        public Color4 Color { get; set; } = Color4.White;
 
         private int VertexArrayHandle { get; set; }
         private int VertexBufferHandle { get; set; }
@@ -18,7 +20,7 @@ namespace Tracks
         private int VertexCount { get; set; }
         private bool UseElementArray { get; set; }
 
-        private ShaderProgram Shader { get; set; }
+        private ShaderProgram ShaderProgram { get; set; }
         private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; }
         private WindowManager WindowManager { get; set; }
@@ -30,7 +32,7 @@ namespace Tracks
             ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
             WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
 
-            Shader = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
+            ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
             Texture = ResourceManager.GetTexture(TextureId);
 
             InitializeVertexBufferObject();
@@ -82,21 +84,24 @@ namespace Tracks
 
         public override void Draw()
         {
-            GL.UseProgram(Shader.Handle);
+            GL.UseProgram(ShaderProgram.Handle);
             GL.BindTexture(TextureTarget.Texture2D, Texture.Handle);
             GL.BindVertexArray(VertexArrayHandle);
 
             Matrix4 model = GetModelMatrix();
-            int modelUniformHandle = GL.GetUniformLocation(Shader.Handle, "model");
+            int modelUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "model");
             GL.UniformMatrix4(modelUniformHandle, false, ref model);
 
             Matrix4 view = GetViewMatrix();
-            int viewUniformHandle = GL.GetUniformLocation(Shader.Handle, "view");
+            int viewUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "view");
             GL.UniformMatrix4(viewUniformHandle, false, ref view);
 
             Matrix4 projection = GetProjectionMatrix();
-            int projectionUniformHandle = GL.GetUniformLocation(Shader.Handle, "projection");
+            int projectionUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "projection");
             GL.UniformMatrix4(projectionUniformHandle, false, ref projection);
+
+            int colorUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "color");
+            GL.Uniform4(colorUniformHandle, Color);
 
             if (UseElementArray)
             {
@@ -114,27 +119,27 @@ namespace Tracks
 
         private Matrix4 GetModelMatrix()
         {
-            const float degreesPerSecond = 90;
-
             Matrix4 model = Matrix4.Identity;
-            model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)ElapsedTime.TotalSeconds * degreesPerSecond) * 1.0f);
-            model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)ElapsedTime.TotalSeconds * degreesPerSecond) * 0.5f);
+
+            // Always scale, then rotation, then translation
+            // And in OpenTK, it's represented in that order
+            model *= Matrix4.CreateScale(Owner.Transform.Scale);
+            model *= Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(Owner.Transform.Rotation));
+            model *= Matrix4.CreateTranslation(Owner.Transform.Position);
+
             return model;
         }
 
         private Matrix4 GetViewMatrix()
         {
-            // Move back slightly
-            Matrix4 view = Matrix4.Identity;
-            view *= Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-            return view;
+            CameraComponent cameraComponent = ServiceLocator.Instance.GetService<CameraComponent>();
+            return cameraComponent.ViewMatrix;
         }
 
         private Matrix4 GetProjectionMatrix()
         {
-            Matrix4 projection = Matrix4.Identity;
-            projection *= Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), WindowManager.Width / (float)WindowManager.Height, 0.1f, 100.0f);
-            return projection;
+            CameraComponent cameraComponent = ServiceLocator.Instance.GetService<CameraComponent>();
+            return cameraComponent.ProjectionMatrix;
         }
     }
 }
