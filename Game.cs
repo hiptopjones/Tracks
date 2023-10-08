@@ -39,6 +39,9 @@ namespace Tracks
             WindowManager.FocusChanged += InputManager.OnWindowFocusChanged;
             WindowManager.KeyDown += InputManager.OnKeyDown;
             WindowManager.KeyUp += InputManager.OnKeyUp;
+            WindowManager.MouseDown += InputManager.OnMouseDown;
+            WindowManager.MouseUp += InputManager.OnMouseUp;
+            WindowManager.MouseMove += InputManager.OnMouseMove;
             ServiceLocator.Instance.ProvideService(WindowManager);
 
             CoroutineManager = new CoroutineManager();
@@ -66,8 +69,8 @@ namespace Tracks
             splashScene.TransitionSceneId = gameSceneId;
             int splashSceneId = SceneManager.AddScene(splashScene);
 
-            SceneManager.SwitchTo(splashSceneId);
-            //SceneManager.SwitchTo(gameSceneId);
+            //SceneManager.SwitchTo(splashSceneId);
+            SceneManager.SwitchTo(gameSceneId);
         }
 
         public void StartFrame()

@@ -23,6 +23,7 @@ namespace Tracks
         private ShaderProgram ShaderProgram { get; set; }
         private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; }
+        private CameraComponent MainCamera { get; set; }
         private WindowManager WindowManager { get; set; }
 
         private TimeSpan ElapsedTime { get; set; }
@@ -30,6 +31,7 @@ namespace Tracks
         public override void Awake()
         {
             ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
+            MainCamera = ServiceLocator.Instance.GetService<CameraComponent>("Main Camera");
             WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
 
             ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
@@ -124,7 +126,7 @@ namespace Tracks
             // Always scale, then rotation, then translation
             // And in OpenTK, it's represented in that order
             model *= Matrix4.CreateScale(Owner.Transform.Scale);
-            model *= Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(Owner.Transform.Rotation));
+            model *= Matrix4.CreateFromQuaternion(Owner.Transform.Rotation);
             model *= Matrix4.CreateTranslation(Owner.Transform.Position);
 
             return model;
@@ -132,14 +134,12 @@ namespace Tracks
 
         private Matrix4 GetViewMatrix()
         {
-            CameraComponent cameraComponent = ServiceLocator.Instance.GetService<CameraComponent>();
-            return cameraComponent.ViewMatrix;
+            return MainCamera.ViewMatrix;
         }
 
         private Matrix4 GetProjectionMatrix()
         {
-            CameraComponent cameraComponent = ServiceLocator.Instance.GetService<CameraComponent>();
-            return cameraComponent.ProjectionMatrix;
+            return MainCamera.ProjectionMatrix;
         }
     }
 }

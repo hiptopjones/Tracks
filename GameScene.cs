@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using static System.Formats.Asn1.AsnWriter;
 using static Tracks.GameSettings;
 
 namespace Tracks
@@ -13,34 +14,24 @@ namespace Tracks
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
             CreateDiagnostics();
-
-            GameObject camera = CreateMainCamera();
-            GameObject mobileCube = CreateMobileTestCube();
-
-            CreateStationaryTestCube(new Vector3(0, 0, 0), Vector3.Zero, 1, Color4.White);
-            CreateStationaryTestCube(new Vector3(0, 1, 0), Vector3.Zero, 1, Color4.Green);
-            CreateStationaryTestCube(new Vector3(1, 0, 0), Vector3.Zero, 1, Color4.Red);
-            CreateStationaryTestCube(new Vector3(0, 0, 1), Vector3.Zero, 1, Color4.Blue);
-
-            CameraComponent cameraComponent = camera.GetComponent<CameraComponent>();
-            cameraComponent.Target = mobileCube;
+            CreateMainCamera();
+            CreateTestCubeRing();
         }
 
         private GameObject CreateMainCamera()
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Main Camera");
-            gameObject.Transform.Position = new Vector3(0, 0, -10);
+            gameObject.Transform.Position = new Vector3(0, 0, 0);
 
-            KeyboardMoveComponent moveComponent = gameObject.AddComponent<KeyboardMoveComponent>();
-            moveComponent.Speed = 10f;
+            ArcBallComponent arcBallComponent = gameObject.AddComponent<ArcBallComponent>();
 
             CameraComponent cameraComponent = gameObject.AddComponent<CameraComponent>();
             cameraComponent.AspectRatio = GameSettings.WindowWidth / (float)GameSettings.WindowHeight;
-            cameraComponent.FieldOfView = 45f;
+            cameraComponent.FieldOfView = 60f;
             cameraComponent.NearClippingDistance = 0.1f;
             cameraComponent.FarClippingDistance = 100f;
 
-            ServiceLocator.Instance.ProvideService<CameraComponent>(cameraComponent);
+            ServiceLocator.Instance.ProvideService("Main Camera", cameraComponent);
 
             return gameObject;
         }
@@ -54,40 +45,37 @@ namespace Tracks
 
             return gameObject;
         }
-        private GameObject CreateStationaryTestCube(Vector3 position, Vector3 rotation, float scale, Color4 color)
+
+        private void CreateTestCubeRing()
         {
-            GameObject gameObject = GameObjectManager.CreateGameObject("Stationary Test Cube");
+            float distance = 3f;
+
+            for (int degrees = 0; degrees < 360; degrees += 30)
+            {
+                float radians = MathHelper.DegreesToRadians(degrees);
+                Vector3 position = new Vector3((float)Math.Cos(radians), 0, (float)Math.Sin(radians)) * distance;
+
+                float scale = ((degrees % 60) + 30) / 90f;
+                CreateTestCube(position, Quaternion.Identity, Vector3.One * scale);
+            }
+        }
+
+        private GameObject CreateTestCube(Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Test Cube");
             gameObject.Transform.Position = position;
             gameObject.Transform.Rotation = rotation;
-            gameObject.Transform.Scale = Vector3.One * scale;
+            gameObject.Transform.Scale = scale;
 
             Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
             drawable3dComponent.Vertices = GameSettings.CubeVertices;
-
-            drawable3dComponent.TextureId = (int)TextureId.Blank;
-            drawable3dComponent.Color = color;
-
+            drawable3dComponent.TextureId = (int)TextureId.TestPalette;
             drawable3dComponent.VertexShaderId = (int)ShaderId.DefaultVertex;
             drawable3dComponent.FragmentShaderId = (int)ShaderId.DefaultFragment;
 
             return gameObject;
         }
     
-        private GameObject CreateMobileTestCube()
-        {
-            GameObject gameObject = GameObjectManager.CreateGameObject("Mobile Test Cube");
-
-            Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
-            drawable3dComponent.Vertices = GameSettings.CubeVertices;
-
-            drawable3dComponent.TextureId = (int)TextureId.TestPattern;
-
-            drawable3dComponent.VertexShaderId = (int)ShaderId.DefaultVertex;
-            drawable3dComponent.FragmentShaderId = (int)ShaderId.DefaultFragment;
-
-            return gameObject;
-        }
-
         public override void OnDestroy()
         {
             // Nothing

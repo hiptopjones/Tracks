@@ -8,10 +8,13 @@ namespace Tracks
 {
     internal class WindowManager
     {
-        public event EventHandler<KeyboardKeyEventArgs> KeyDown;
-        public event EventHandler<KeyboardKeyEventArgs> KeyUp;
         public event EventHandler<FocusedChangedEventArgs> FocusChanged;
         public event EventHandler<ResizeEventArgs> Resized;
+        public event EventHandler<KeyboardKeyEventArgs> KeyDown;
+        public event EventHandler<KeyboardKeyEventArgs> KeyUp;
+        public event EventHandler<MouseMoveEventArgs> MouseMove;
+        public event EventHandler<MouseButtonEventArgs> MouseDown;
+        public event EventHandler<MouseButtonEventArgs> MouseUp;
 
         public bool IsOpen => !GameWindow.IsExiting;
 
@@ -42,6 +45,9 @@ namespace Tracks
             GameWindow.Resize += OnResized;
             GameWindow.KeyDown += OnKeyDown;
             GameWindow.KeyUp += OnKeyUp;
+            GameWindow.MouseMove += OnMouseMove;
+            GameWindow.MouseDown += OnMouseDown;
+            GameWindow.MouseUp += OnMouseUp;
 
             GL.Enable(EnableCap.DepthTest);
         }
@@ -85,15 +91,29 @@ namespace Tracks
             FocusChanged?.Invoke(this, e);
         }
 
-        private void OnKeyUp(KeyboardKeyEventArgs e)
-        {
-            KeyUp?.Invoke(this, e);
-        }
-
         private void OnKeyDown(KeyboardKeyEventArgs e)
         {
             KeyDown?.Invoke(this, e);
         }
 
+        private void OnKeyUp(KeyboardKeyEventArgs e)
+        {
+            KeyUp?.Invoke(this, e);
+        }
+
+        private void OnMouseMove(MouseMoveEventArgs e)
+        {
+            MouseMove?.Invoke(this, e);
+        }
+
+        private void OnMouseDown(MouseButtonEventArgs e)
+        {
+            MouseDown?.Invoke(this, e);
+        }
+
+        private void OnMouseUp(MouseButtonEventArgs e)
+        {
+            MouseUp?.Invoke(this, e);
+        }
     }
 }

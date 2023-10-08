@@ -1,11 +1,11 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Tracks
 {
     internal class CameraComponent : Component
     {
-        public Vector3 Up { get; set; } = new Vector3(0.0f, 1.0f, 0.0f);
         public float FieldOfView { get; set; }
         public float AspectRatio { get; set; }
         public float NearClippingDistance { get; set; }
@@ -32,7 +32,7 @@ namespace Tracks
             UpdateViewMatrix();
         }
 
-        private void OnWindowResized(object sender, OpenTK.Windowing.Common.ResizeEventArgs e)
+        private void OnWindowResized(object sender, ResizeEventArgs e)
         {
             AspectRatio = WindowManager.Width / (float)WindowManager.Height;
 
@@ -52,7 +52,14 @@ namespace Tracks
 
         private void UpdateViewMatrix()
         {
-            ViewMatrix = Matrix4.LookAt(Owner.Transform.Position, Target.Transform.Position, Up);
+            if (Target != null)
+            {
+                ViewMatrix = Matrix4.LookAt(Owner.Transform.Position, Target.Transform.Position, Vector3.UnitY);
+            }
+            else
+            {
+                ViewMatrix = Matrix4.LookAt(Owner.Transform.Position, Owner.Transform.Forward, Vector3.UnitY);
+            }
         }
 
         private void UpdateProjectionMatrix()
@@ -63,7 +70,7 @@ namespace Tracks
             }
             else
             {
-                ProjectionMatrix = Matrix4.CreateOrthographic(WindowManager.Width / 10, WindowManager.Height / 10, NearClippingDistance, FarClippingDistance);
+                ProjectionMatrix = Matrix4.CreateOrthographic(WindowManager.Width / 150, WindowManager.Height / 150, NearClippingDistance, FarClippingDistance);
             }
 
         }
