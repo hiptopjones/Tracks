@@ -24,7 +24,6 @@ namespace Tracks
         private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; }
         private CameraComponent MainCamera { get; set; }
-        private WindowManager WindowManager { get; set; }
 
         private TimeSpan ElapsedTime { get; set; }
 
@@ -32,7 +31,6 @@ namespace Tracks
         {
             ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
             MainCamera = ServiceLocator.Instance.GetService<CameraComponent>("Main Camera");
-            WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
 
             ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
             Texture = ResourceManager.GetTexture(TextureId);

@@ -15,6 +15,7 @@ namespace Tracks
         public event EventHandler<MouseMoveEventArgs> MouseMove;
         public event EventHandler<MouseButtonEventArgs> MouseDown;
         public event EventHandler<MouseButtonEventArgs> MouseUp;
+        public event EventHandler<MouseWheelEventArgs> MouseWheel;
 
         public bool IsOpen => !GameWindow.IsExiting;
 
@@ -48,6 +49,7 @@ namespace Tracks
             GameWindow.MouseMove += OnMouseMove;
             GameWindow.MouseDown += OnMouseDown;
             GameWindow.MouseUp += OnMouseUp;
+            GameWindow.MouseWheel += OnMouseWheel;
 
             GL.Enable(EnableCap.DepthTest);
         }
@@ -114,6 +116,11 @@ namespace Tracks
         private void OnMouseUp(MouseButtonEventArgs e)
         {
             MouseUp?.Invoke(this, e);
+        }
+
+        private void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            MouseWheel?.Invoke(this, e);
         }
     }
 }

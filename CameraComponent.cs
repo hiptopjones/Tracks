@@ -44,9 +44,9 @@ namespace Tracks
             if (InputManager.IsKeyDown(Keys.P))
             {
                 IsUsingPerspective = !IsUsingPerspective;
-                UpdateProjectionMatrix();
             }
 
+            UpdateProjectionMatrix();
             UpdateViewMatrix();
         }
 

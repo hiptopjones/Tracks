@@ -14,21 +14,23 @@ namespace Tracks
     {
         public float MouseSensitivity { get; set; } = 0.1f;
 
-        private bool UseMouseInput { get; set; } = true;
+        private bool UseMouseLook { get; set; } = true;
         private Vector3 CumulativeAxisAngles { get; set; }
 
         private InputManager InputManager { get; set; }
+        private CameraComponent MainCamera { get; set; }
 
         public override void Awake()
         {
             InputManager = ServiceLocator.Instance.GetService<InputManager>();
+            MainCamera = ServiceLocator.Instance.GetService<CameraComponent>("Main Camera");
         }
 
         public override void Update(float deltaTime)
         {
             if (InputManager.IsKeyDown(Keys.T))
             {
-                UseMouseInput = !UseMouseInput;
+                UseMouseLook = !UseMouseLook;
             }
 
             if (InputManager.IsKeyPressed(Keys.A))
@@ -49,11 +51,12 @@ namespace Tracks
             float radiansAroundX = 0;
             float radiansAroundY = 0;
 
-            if (UseMouseInput)
+            if (UseMouseLook)
             {
                 if (InputManager.IsMousePressed(MouseButton.Button1))
                 {
-                    Vector2 mouseDelta = InputManager.MouseDelta * MouseSensitivity;
+                    //Vector2 mouseDelta = InputManager.MouseMoveDelta * MouseSensitivity;
+                    Vector2 mouseDelta = InputManager.MouseWheelDelta * MouseSensitivity;
 
                     if (mouseDelta.X != 0 || mouseDelta.Y != 0)
                     {
@@ -71,6 +74,8 @@ namespace Tracks
                 radiansAroundY = MathHelper.DegreesToRadians(degreesPerSecond * deltaTime);
                 CumulativeAxisAngles += new Vector3(0, radiansAroundY, 0);
             }
+
+            MainCamera.FieldOfView = Math.Clamp(MainCamera.FieldOfView + InputManager.MouseWheelDelta.Y, 1, 89);
 
             // BOTH OF THESE METHODS (relative and absolute) WORK FINE
 

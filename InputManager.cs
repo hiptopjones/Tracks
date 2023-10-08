@@ -14,8 +14,9 @@ namespace Tracks
         private HashSet<MouseButton> MouseDown { get; set; } = new HashSet<MouseButton>();
         private HashSet<MouseButton> MouseUp { get; set; } = new HashSet<MouseButton>();
 
-        public Vector2 MouseDelta { get; private set; }
         public Vector2 MousePosition { get; private set; }
+        public Vector2 MouseMoveDelta { get; private set; }
+        public Vector2 MouseWheelDelta { get; private set; }
 
         public void OnFrameStarted()
         {
@@ -25,7 +26,8 @@ namespace Tracks
             MouseDown.Clear();
             MouseUp.Clear();
 
-            MouseDelta = Vector2.Zero;
+            MouseMoveDelta = Vector2.Zero;
+            MouseWheelDelta = Vector2.Zero;
         }
 
         public void OnWindowFocusChanged(object sender, FocusedChangedEventArgs e)
@@ -106,8 +108,15 @@ namespace Tracks
 
         internal void OnMouseMove(object sender, MouseMoveEventArgs e)
         {
-            MouseDelta = e.Delta;
+            MouseMoveDelta = e.Delta;
             MousePosition = e.Position;
+        }
+
+        internal void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            Console.WriteLine($"Mouse Wheel: {e.Offset}");
+
+            MouseWheelDelta = e.Offset;
         }
     }
 }

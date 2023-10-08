@@ -42,6 +42,7 @@ namespace Tracks
             WindowManager.MouseDown += InputManager.OnMouseDown;
             WindowManager.MouseUp += InputManager.OnMouseUp;
             WindowManager.MouseMove += InputManager.OnMouseMove;
+            WindowManager.MouseWheel += InputManager.OnMouseWheel;
             ServiceLocator.Instance.ProvideService(WindowManager);
 
             CoroutineManager = new CoroutineManager();
