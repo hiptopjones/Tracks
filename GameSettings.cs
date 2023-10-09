@@ -11,6 +11,12 @@ namespace Tracks
         public const int WindowHeight = 600;
         public static readonly Color4 WindowClearColor = new Color4(30, 30, 30, 0);
 
+        // Camera
+        public const float CameraAspectRatio = GameSettings.WindowWidth / (float) GameSettings.WindowHeight;
+        public const float CameraFieldOfView = 60f;
+        public const float CameraNearClippingDistance = 0.1f;
+        public const float CameraFarClippingDistance = 100f;
+
         // Stats
         public const int StatsFpsSampleCount = 100;
 

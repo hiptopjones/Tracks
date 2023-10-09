@@ -11,7 +11,7 @@ namespace Tracks
 {
     internal class KeyboardMoveComponent : Component
     {
-        public float Speed { get; set; }
+        public float Speed { get; set; } = 5;
 
         private InputManager InputManager { get; set; }
 
@@ -26,32 +26,32 @@ namespace Tracks
 
             if (InputManager.IsKeyPressed(Keys.W))
             {
-                direction += -Vector3.UnitZ;
+                direction += Owner.Transform.Forward;
             }
 
             if (InputManager.IsKeyPressed(Keys.A))
             {
-                direction += -Vector3.UnitX;
+                direction += Owner.Transform.Left;
             }
 
             if (InputManager.IsKeyPressed(Keys.S))
             {
-                direction += Vector3.UnitZ;
+                direction += Owner.Transform.Backward;
             }
 
             if (InputManager.IsKeyPressed(Keys.D))
             {
-                direction += Vector3.UnitX;
+                direction += Owner.Transform.Right;
             }
 
             if (InputManager.IsKeyPressed(Keys.Q))
             {
-                direction += Vector3.UnitY;
+                direction += Owner.Transform.Up;
             }
 
             if (InputManager.IsKeyPressed(Keys.E))
             {
-                direction += -Vector3.UnitY;
+                direction += Owner.Transform.Down;
             }
 
 

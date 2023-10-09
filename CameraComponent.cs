@@ -11,8 +11,6 @@ namespace Tracks
         public float NearClippingDistance { get; set; }
         public float FarClippingDistance { get; set; }
 
-        public GameObject Target { get; set; }
-
         public Matrix4 ViewMatrix { get; private set; }
         public Matrix4 ProjectionMatrix { get; private set; }
 
@@ -46,20 +44,24 @@ namespace Tracks
                 IsUsingPerspective = !IsUsingPerspective;
             }
 
+            if (InputManager.IsKeyPressed(Keys.R))
+            {
+                Owner.Transform.Position = Vector3.Zero;
+                Owner.Transform.Rotation = Quaternion.Identity;
+                FieldOfView = GameSettings.CameraFieldOfView;
+            }
+
             UpdateProjectionMatrix();
             UpdateViewMatrix();
         }
 
         private void UpdateViewMatrix()
         {
-            if (Target != null)
-            {
-                ViewMatrix = Matrix4.LookAt(Owner.Transform.Position, Target.Transform.Position, Vector3.UnitY);
-            }
-            else
-            {
-                ViewMatrix = Matrix4.LookAt(Owner.Transform.Position, Owner.Transform.Forward, Vector3.UnitY);
-            }
+            Vector3 eye = Owner.Transform.Position;
+            Vector3 target = Owner.Transform.Position + Owner.Transform.Forward; // Look in front of wherever the camera is!
+            Vector3 up = Vector3.UnitY;
+
+            ViewMatrix = Matrix4.LookAt(eye, target, up);
         }
 
         private void UpdateProjectionMatrix()

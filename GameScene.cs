@@ -23,13 +23,14 @@ namespace Tracks
             GameObject gameObject = GameObjectManager.CreateGameObject("Main Camera");
             gameObject.Transform.Position = new Vector3(0, 0, 0);
 
+            KeyboardMoveComponent moveComponent = gameObject.AddComponent<KeyboardMoveComponent>();
             ArcBallComponent arcBallComponent = gameObject.AddComponent<ArcBallComponent>();
 
             CameraComponent cameraComponent = gameObject.AddComponent<CameraComponent>();
-            cameraComponent.AspectRatio = GameSettings.WindowWidth / (float)GameSettings.WindowHeight;
-            cameraComponent.FieldOfView = 60f;
-            cameraComponent.NearClippingDistance = 0.1f;
-            cameraComponent.FarClippingDistance = 100f;
+            cameraComponent.AspectRatio = GameSettings.CameraAspectRatio;
+            cameraComponent.FieldOfView = GameSettings.CameraFieldOfView;
+            cameraComponent.NearClippingDistance = GameSettings.CameraNearClippingDistance;
+            cameraComponent.FarClippingDistance = GameSettings.CameraFarClippingDistance;
 
             ServiceLocator.Instance.ProvideService("Main Camera", cameraComponent);
 
