@@ -1,4 +1,6 @@
-﻿namespace Tracks
+﻿using System.Xml.Linq;
+
+namespace Tracks
 {
     internal class CoreSystem
     {
@@ -38,6 +40,26 @@
                     gameObject.LateUpdate(deltaTime);
                 }
             }
+        }
+
+        internal GameObject FindGameObjectByName(string name)
+        {
+            return GameObjects.FirstOrDefault(x => x.Name == name);
+        }
+
+        internal GameObject[] FindGameObjectsByName(string name)
+        {
+            return GameObjects.Where(x => x.Name == name).ToArray();
+        }
+
+        internal GameObject FindGameObjectByComponent<T>() where T : Component
+        {
+            return GameObjects.FirstOrDefault(x => x.HasComponent<T>());
+        }
+
+        internal GameObject[] FindGameObjectsByComponent<T>() where T : Component
+        {
+            return GameObjects.Where(x => x.HasComponent<T>()).ToArray();
         }
     }
 }

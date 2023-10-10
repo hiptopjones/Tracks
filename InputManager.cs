@@ -4,6 +4,10 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Tracks
 {
+    // TODO: Would be useful to have a way to check if multiple callsites
+    // are checking for the same mouse / key input
+
+    // TODO: Would be useful to get the list of keys, rather than calling for each
     internal class InputManager
     {
         private HashSet<Keys> KeyPressed { get; set; } = new HashSet<Keys>();
@@ -114,8 +118,6 @@ namespace Tracks
 
         internal void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            Console.WriteLine($"Mouse Wheel: {e.Offset}");
-
             MouseWheelDelta = e.Offset;
         }
     }

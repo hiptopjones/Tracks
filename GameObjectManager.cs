@@ -40,6 +40,26 @@
             return gameObject;
         }
 
+        public GameObject FindGameObjectByName(string name)
+        {
+            return CoreSystem.FindGameObjectByName(name);
+        }
+
+        public GameObject[] FindGameObjectsByName(string name)
+        {
+            return CoreSystem.FindGameObjectsByName(name);
+        }
+
+        public GameObject FindGameObjectByComponent<T>() where T : Component
+        {
+            return CoreSystem.FindGameObjectByComponent<T>();
+        }
+
+        public GameObject[] FindGameObjectsByComponent<T>() where T : Component
+        {
+            return CoreSystem.FindGameObjectsByComponent<T>();
+        }
+
         public void Update(float deltaTime)
         {
             ProcessRemovals();

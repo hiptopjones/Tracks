@@ -54,16 +54,17 @@ namespace Tracks
                 direction += Owner.Transform.Down;
             }
 
-
             if (direction != Vector3.Zero)
             {
                 direction.Normalize();
-                Owner.Transform.Position += direction * Speed * deltaTime;
-            }
 
-            if (InputManager.IsKeyPressed(Keys.R))
-            {
-                Owner.Transform.Position = Vector3.Zero;
+                float scaledSpeed = Speed;
+                if (InputManager.IsKeyPressed(Keys.LeftShift))
+                {
+                    scaledSpeed /= 5;
+                }
+
+                Owner.Transform.Position += direction * scaledSpeed * deltaTime;
             }
 
             Debug.DrawText($"Player: {Owner.Transform.Position}", new Vector2(-750, -550));

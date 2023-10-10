@@ -21,10 +21,9 @@ namespace Tracks
         private GameObject CreateMainCamera()
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Main Camera");
-            gameObject.Transform.Position = new Vector3(0, 0, 0);
+            gameObject.Transform.Position = new Vector3(0, 0, 1);
 
-            KeyboardMoveComponent moveComponent = gameObject.AddComponent<KeyboardMoveComponent>();
-            ArcBallComponent arcBallComponent = gameObject.AddComponent<ArcBallComponent>();
+            ArcBallComponent exploreComponent = gameObject.AddComponent<ArcBallComponent>();
 
             CameraComponent cameraComponent = gameObject.AddComponent<CameraComponent>();
             cameraComponent.AspectRatio = GameSettings.CameraAspectRatio;
@@ -57,11 +56,18 @@ namespace Tracks
                 Vector3 position = new Vector3((float)Math.Cos(radians), 0, (float)Math.Sin(radians)) * distance;
 
                 float scale = ((degrees % 60) + 30) / 90f;
-                CreateTestCube(position, Quaternion.Identity, Vector3.One * scale);
+
+                int textureId = (int)TextureId.TestPalette;
+                if (degrees == 0)
+                {
+                    textureId = (int)TextureId.TestPattern;
+                }
+
+                CreateTestCube(position, Quaternion.Identity, Vector3.One * scale, textureId);
             }
         }
 
-        private GameObject CreateTestCube(Vector3 position, Quaternion rotation, Vector3 scale)
+        private GameObject CreateTestCube(Vector3 position, Quaternion rotation, Vector3 scale, int textureId)
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Test Cube");
             gameObject.Transform.Position = position;
@@ -70,7 +76,7 @@ namespace Tracks
 
             Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
             drawable3dComponent.Vertices = GameSettings.CubeVertices;
-            drawable3dComponent.TextureId = (int)TextureId.TestPalette;
+            drawable3dComponent.TextureId = textureId;
             drawable3dComponent.VertexShaderId = (int)ShaderId.DefaultVertex;
             drawable3dComponent.FragmentShaderId = (int)ShaderId.DefaultFragment;
 

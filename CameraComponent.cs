@@ -44,13 +44,6 @@ namespace Tracks
                 IsUsingPerspective = !IsUsingPerspective;
             }
 
-            if (InputManager.IsKeyPressed(Keys.R))
-            {
-                Owner.Transform.Position = Vector3.Zero;
-                Owner.Transform.Rotation = Quaternion.Identity;
-                FieldOfView = GameSettings.CameraFieldOfView;
-            }
-
             UpdateProjectionMatrix();
             UpdateViewMatrix();
         }
@@ -72,6 +65,7 @@ namespace Tracks
             }
             else
             {
+                // TODO: How to make orthographic view maintain the rough dimensions of things in the foreground?
                 ProjectionMatrix = Matrix4.CreateOrthographic(WindowManager.Width / 150, WindowManager.Height / 150, NearClippingDistance, FarClippingDistance);
             }
 
