@@ -13,9 +13,31 @@ namespace Tracks
             GameObjectManager = new GameObjectManager();
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
-            CreateDiagnostics();
             CreateMainCamera();
+
             CreateTestCubeRing();
+
+            // This needs to be at the end of the draw list to make blending work properly with depth testing
+            CreateDebugGrid();
+
+            CreateDiagnostics();
+        }
+
+        private GameObject CreateDebugGrid()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Debug Grid");
+            float scaleFactor = 100;
+            gameObject.Transform.Rotation = Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.DegreesToRadians(-90));
+            gameObject.Transform.Position = new Vector3(-0.5f, 0, 0.5f) * scaleFactor;
+            gameObject.Transform.Scale = new Vector3(scaleFactor);
+
+            Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
+            drawable3dComponent.Vertices = GameSettings.QuadVertices;
+            drawable3dComponent.TextureId = (int)GameSettings.TextureId.GridPattern;
+            drawable3dComponent.VertexShaderId = (int)ShaderId.DefaultVertex;
+            drawable3dComponent.FragmentShaderId = (int)ShaderId.DefaultFragment;
+
+            return gameObject;
         }
 
         private GameObject CreateMainCamera()
@@ -82,7 +104,7 @@ namespace Tracks
 
             return gameObject;
         }
-    
+
         public override void OnDestroy()
         {
             // Nothing

@@ -28,6 +28,7 @@ namespace Tracks
         public const string TestPatternTextureFileName = "TestPattern.png";
         public const string TestPaletteTextureFileName = "TestPalette.png";
         public const string BlankTextureFileName = "Blank.png";
+        public const string GridPatternTextureFileName = "GridPattern.png";
 
         // Debug
         public const string DebugFontTextureFileName = "CascadiaMono33.png";
@@ -56,6 +57,7 @@ namespace Tracks
             TestPalette,
             Blank,
             DebugFont,
+            GridPattern,
         }
 
         public static readonly Dictionary<int, string> Textures = new Dictionary<int, string>
@@ -65,6 +67,7 @@ namespace Tracks
             { (int)TextureId.TestPalette, TestPaletteTextureFileName },
             { (int)TextureId.Blank, BlankTextureFileName },
             { (int)TextureId.DebugFont, DebugFontTextureFileName },
+            { (int)TextureId.GridPattern, GridPatternTextureFileName },
         };
 
         // Shaders
@@ -88,9 +91,21 @@ namespace Tracks
             { (int)ShaderId.TileFragment, TileFragmentShaderFileName },
         };
 
+        public static readonly float[] QuadVertices = new[]
+        {
+            // pos            // tex
+            0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f
+        };
+
         public static readonly float[] CubeVertices = new[]
         {
-            // Position           Texture coordinates
+            // pos            // tex
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
              0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
              0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
