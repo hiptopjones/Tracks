@@ -42,6 +42,8 @@ namespace Tracks
         public const string SpriteFragmentShaderFileName = "Sprite.frag";
         public const string TileVertexShaderFileName = "Tile.vert";
         public const string TileFragmentShaderFileName = "Tile.frag";
+        public const string DebugGridVertexShaderFileName = "DebugGrid.vert";
+        public const string DebugGridFragmentShaderFileName = "DebugGrid.frag";
 
         // Resources
         public const string ResourcesDirectoryName = "Assets";
@@ -79,6 +81,8 @@ namespace Tracks
             SpriteFragment,
             TileVertex,
             TileFragment,
+            DebugGridVertex,
+            DebugGridFragment,
         }
 
         public static readonly Dictionary<int, string> Shaders = new Dictionary<int, string>
@@ -89,6 +93,8 @@ namespace Tracks
             { (int)ShaderId.SpriteFragment, SpriteFragmentShaderFileName },
             { (int)ShaderId.TileVertex, TileVertexShaderFileName },
             { (int)ShaderId.TileFragment, TileFragmentShaderFileName },
+            { (int)ShaderId.DebugGridVertex, DebugGridVertexShaderFileName },
+            { (int)ShaderId.DebugGridFragment, DebugGridFragmentShaderFileName },
         };
 
         public static readonly float[] QuadVertices = new[]
