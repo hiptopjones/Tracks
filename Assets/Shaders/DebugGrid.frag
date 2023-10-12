@@ -1,8 +1,13 @@
 ﻿#version 450 core
 
-// TODO: These should be uniforms
-float near = 0.1;
-float far = 100;
+// Adapted from here:
+//  * https://asliceofrendering.com/scene%20helper/2020/01/05/InfiniteGrid/
+// Additional help with depth issues from here:
+//  * https://stackoverflow.com/questions/72855848/depth-issue-with-infinite-grid-in-opengl-3-3-with-glsl
+//  * https://stackoverflow.com/questions/72791713/issues-with-infinite-grid-in-opengl-4-5-with-glsl
+
+uniform float near;
+uniform float far;
 
 in vec3 nearPoint;
 in vec3 farPoint;

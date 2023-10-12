@@ -83,6 +83,12 @@ namespace Tracks
             int projectionUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "projection");
             GL.UniformMatrix4(projectionUniformHandle, false, ref projection);
 
+            int nearUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "near");
+            GL.Uniform1(nearUniformHandle, GameSettings.CameraNearClippingDistance);
+
+            int farUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "far");
+            GL.Uniform1(farUniformHandle, GameSettings.CameraFarClippingDistance);
+
             GL.DrawArrays(PrimitiveType.Triangles, 0, VertexCount);
 
             GL.BindVertexArray(0);
