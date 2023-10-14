@@ -30,12 +30,11 @@ namespace Tracks
 
         private ShaderProgram ShaderProgram { get; set; }
         private ResourceManager ResourceManager { get; set; }
-        private WindowManager WindowManager { get; set; }
+        private CameraComponent UiCamera { get; set; }
 
         public SpriteRenderer()
         {
             ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
-            WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
 
             InitializeShaders();
             InitializeVertexBufferObject();
@@ -80,6 +79,12 @@ namespace Tracks
 
         public void Draw(Sprite sprite)
         {
+            // TODO: Need to make this renderer object have some lifecycle functions, and move this out
+            if (UiCamera == null)
+            {
+                UiCamera = ServiceLocator.Instance.GetService<CameraComponent>("UI Camera");
+            }
+
             GL.UseProgram(ShaderProgram.Handle);
             GL.BindTexture(TextureTarget.Texture2D, sprite.Texture.Handle);
             GL.BindVertexArray(VertexArrayHandle);
@@ -101,8 +106,10 @@ namespace Tracks
 
         private Matrix4 GetModelMatrix(Sprite sprite)
         {
-
             Matrix4 model = Matrix4.Identity;
+
+            // Always scale, then rotation, then translation
+            // And in OpenTK, it's represented in that order
 
             // Quad vertices are from 0,0 to 1,1, so this scaling
             // enables using the same VAO for all sprites
@@ -122,8 +129,7 @@ namespace Tracks
 
         private Matrix4 GetProjectionMatrix()
         {
-            Matrix4 projection = Matrix4.CreateOrthographic(WindowManager.Width, WindowManager.Height, -1.0f, 1.0f);
-            return projection;
+            return UiCamera.ProjectionMatrix;
         }
     }
 }

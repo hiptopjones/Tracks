@@ -10,7 +10,7 @@
 
         public float TimeScale { get; private set; } = 1;
 
-        private Queue<float> RecentDeltaTimes { get; } = new Queue<float>(GameSettings.StatsFpsSampleCount);
+        private Queue<float> RecentDeltaTimes { get; } = new Queue<float>(GameSettings.DiagnosticsFpsSampleCount);
 
         public void OnFrameStarted()
         {
@@ -24,7 +24,7 @@
 
         private void CalculateFps()
         {
-            if (RecentDeltaTimes.Count == GameSettings.StatsFpsSampleCount)
+            if (RecentDeltaTimes.Count == GameSettings.DiagnosticsFpsSampleCount)
             {
                 RecentDeltaTimes.Dequeue();
             }

@@ -47,7 +47,7 @@ namespace Tracks
             {
                 Owner.Transform.Position = StartingPosition;
                 Owner.Transform.Rotation = StartingRotation;
-                MainCamera.FieldOfView = GameSettings.CameraFieldOfView;
+                MainCamera.FieldOfView = GameSettings.MainCameraFieldOfView;
                 OrbitDistance = MinOrbitDistance;
             }
 

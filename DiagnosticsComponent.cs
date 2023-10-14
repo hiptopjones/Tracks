@@ -6,61 +6,58 @@ namespace Tracks
 {
     internal class DiagnosticsComponent : Component
     {
-        public Vector2 RowOffset { get; } = new Vector2(0, -60);
-        public Vector2 ColumnOffset { get; } = new Vector2(250, 0);
+        public Vector2 RowOffset { get; set; }
+        public Vector2 ColumnOffset { get; set; }
 
         private TimeManager TimeManager { get; set; }
         private GameObjectManager GameObjectManager { get; set; }
         private Process CurrentProcess { get; set; }
+
+        private Dictionary<string, Func<string>> StatisticValueGetters { get; set; } = new Dictionary<string, Func<string>>();
+        private List<string> StatisticLabels { get; set; } = new List<string>();
 
         public override void Awake()
         {
             TimeManager = ServiceLocator.Instance.GetService<TimeManager>();
             GameObjectManager = ServiceLocator.Instance.GetService<GameObjectManager>();
             CurrentProcess = Process.GetCurrentProcess();
+
+            AddStatisticValue("FPS", GetFps);
+            AddStatisticValue("CPU", GetCpuUsage);
+            AddStatisticValue("MEM", GetMemoryUsage);
+            AddStatisticValue("OBJ", GetObjectCount);
+            AddStatisticValue("CMP", GetComponentCount);
         }
 
         public override void Update(float deltaTime)
         {
-            DrawStats();
+            DrawStatistics();
         }
 
-        private void DrawStats()
+        public void AddStatisticValue(string statisticLabel, Func<string> statisticValueGetter)
         {
+            StatisticLabels.Add(statisticLabel);
+            StatisticValueGetters[statisticLabel] = statisticValueGetter;
+        }
+
+        private void DrawStatistics()
+        {
+            float scale = Owner.Transform.Scale.X;
+
             Vector2 labelPosition = Owner.Transform.Position.Xy;
-            Vector2 valuePosition = labelPosition + RowOffset;
+            Vector2 valuePosition = labelPosition + RowOffset * scale;
 
-            string fps = GetFps();
-            Debug.DrawText("FPS", labelPosition, Color.Magenta);
-            Debug.DrawText(fps, valuePosition, Color.White);
+            foreach (string statisticLabel in StatisticLabels)
+            {
+                Func<string> statisticValueGetter = StatisticValueGetters[statisticLabel];
+                string statisticValue = statisticValueGetter.Invoke();
 
-            labelPosition += ColumnOffset;
-            valuePosition = labelPosition + RowOffset;
+                Debug.DrawText(statisticLabel, labelPosition, Color.Magenta, scale);
+                Debug.DrawText(statisticValue, valuePosition, Color.White, scale);
 
-            string cpuUsage = GetCpuUsage();
-            Debug.DrawText("CPU", labelPosition, Color.Magenta);
-            Debug.DrawText(cpuUsage, valuePosition, Color.White);
-
-            labelPosition += ColumnOffset;
-            valuePosition = labelPosition + RowOffset;
-
-            string memoryUsage = GetMemoryUsage();
-            Debug.DrawText("MEM", labelPosition, Color.Magenta);
-            Debug.DrawText(memoryUsage, valuePosition, Color.White);
-
-            labelPosition += ColumnOffset;
-            valuePosition = labelPosition + RowOffset;
-
-            string numObjects = GetObjectCount();
-            Debug.DrawText("OBJ", labelPosition, Color.Magenta);
-            Debug.DrawText(numObjects, valuePosition, Color.White);
-
-            labelPosition += ColumnOffset;
-            valuePosition = labelPosition + RowOffset;
-
-            string numComponents = GetComponentCount();
-            Debug.DrawText("CMP", labelPosition, Color.Magenta);
-            Debug.DrawText(numComponents, valuePosition, Color.White);
+                labelPosition += ColumnOffset * scale;
+                valuePosition = labelPosition + RowOffset * scale;
+            }
         }
 
         private string GetFps()

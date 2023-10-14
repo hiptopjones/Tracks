@@ -14,6 +14,7 @@ namespace Tracks
             ServiceLocator.Instance.ProvideService(GameObjectManager);
 
             CreateMainCamera();
+            CreateUiCamera();
 
             CreateTestCubeRing();
 
@@ -40,12 +41,28 @@ namespace Tracks
             ArcBallComponent exploreComponent = gameObject.AddComponent<ArcBallComponent>();
 
             CameraComponent cameraComponent = gameObject.AddComponent<CameraComponent>();
-            cameraComponent.AspectRatio = GameSettings.CameraAspectRatio;
-            cameraComponent.FieldOfView = GameSettings.CameraFieldOfView;
-            cameraComponent.NearClippingDistance = GameSettings.CameraNearClippingDistance;
-            cameraComponent.FarClippingDistance = GameSettings.CameraFarClippingDistance;
+            cameraComponent.AspectRatio = GameSettings.MainCameraAspectRatio;
+            cameraComponent.FieldOfView = GameSettings.MainCameraFieldOfView;
+            cameraComponent.NearClipDistance = GameSettings.MainCameraNearClipDistance;
+            cameraComponent.FarClipDistance = GameSettings.MainCameraFarClipDistance;
 
             ServiceLocator.Instance.ProvideService("Main Camera", cameraComponent);
+
+            return gameObject;
+        }
+
+        private GameObject CreateUiCamera()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("UI Camera");
+            gameObject.Transform.Position = new Vector3(0, 0, 1);
+
+            CameraComponent cameraComponent = gameObject.AddComponent<CameraComponent>();
+            cameraComponent.OrthographicBounds = GameSettings.UiCameraBounds;
+            cameraComponent.NearClipDistance = GameSettings.UiCameraNearClipDistance;
+            cameraComponent.FarClipDistance = GameSettings.UiCameraFarClipDistance;
+            cameraComponent.IsOrthographic = true;
+
+            ServiceLocator.Instance.ProvideService("UI Camera", cameraComponent);
 
             return gameObject;
         }
@@ -53,9 +70,12 @@ namespace Tracks
         private GameObject CreateDiagnostics()
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Diagnostics");
-            gameObject.Transform.Position = new Vector3(-400, 600, 0);
+            gameObject.Transform.Position = GameSettings.DiagnosticsPosition;
+            gameObject.Transform.Scale = Vector3.One * GameSettings.DiagnosticsScale;
 
             DiagnosticsComponent diagnosticsComponent = gameObject.AddComponent<DiagnosticsComponent>();
+            diagnosticsComponent.RowOffset = GameSettings.DiagnosticsRowOffset;
+            diagnosticsComponent.ColumnOffset = GameSettings.DiagnosticsColumnOffset;
 
             return gameObject;
         }

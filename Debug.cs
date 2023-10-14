@@ -33,8 +33,13 @@ namespace Tracks
 
         public static void DrawText(string message, Vector2 position, Color4 color)
         {
+            DrawText(message, position, color, 1.0f);
+        }
+
+        public static void DrawText(string message, Vector2 position, Color4 color, float scale)
+        {
             FontAtlas fontAtlas = ServiceLocator.Instance.GetService<FontAtlas>();
-            Text text = new Text(message, position, fontAtlas, color);
+            Text text = new Text(message, position, fontAtlas, color, scale);
 
             TextDrawables.Add(text);
         }

@@ -6,25 +6,28 @@ namespace Tracks
 {
     internal class CameraComponent : Component
     {
+        // Orthographic only
+        public bool IsOrthographic { get; set; }
+        public Box2 OrthographicBounds { get; set; }
+
+        // Perspective only
         public float FieldOfView { get; set; }
         public float AspectRatio { get; set; }
-        public float NearClippingDistance { get; set; }
-        public float FarClippingDistance { get; set; }
+
+        // Shared
+        public float NearClipDistance { get; set; }
+        public float FarClipDistance { get; set; }
 
         public Matrix4 ViewMatrix { get; private set; }
         public Matrix4 ProjectionMatrix { get; private set; }
 
-        private bool IsUsingPerspective { get; set; } = true;
 
         private WindowManager WindowManager { get; set; }
-        private InputManager InputManager { get; set; }
 
         public override void Awake()
         {
             WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
             WindowManager.Resized += OnWindowResized;
-
-            InputManager = ServiceLocator.Instance.GetService<InputManager>();
 
             UpdateProjectionMatrix();
             UpdateViewMatrix();
@@ -39,12 +42,6 @@ namespace Tracks
 
         public override void Update(float deltaTime)
         {
-            if (InputManager.IsKeyDown(Keys.P))
-            {
-                IsUsingPerspective = !IsUsingPerspective;
-            }
-
-            UpdateProjectionMatrix();
             UpdateViewMatrix();
         }
 
@@ -59,16 +56,18 @@ namespace Tracks
 
         private void UpdateProjectionMatrix()
         {
-            if (IsUsingPerspective)
+            if (IsOrthographic)
             {
-                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FieldOfView), AspectRatio, NearClippingDistance, FarClippingDistance);
+                ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(
+                    OrthographicBounds.Min.X, OrthographicBounds.Max.X,
+                    OrthographicBounds.Min.Y, OrthographicBounds.Max.Y,
+                    NearClipDistance, FarClipDistance);
             }
             else
             {
                 // TODO: How to make orthographic view maintain the rough dimensions of things in the foreground?
-                ProjectionMatrix = Matrix4.CreateOrthographic(WindowManager.Width / 150, WindowManager.Height / 150, NearClippingDistance, FarClippingDistance);
+                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FieldOfView), AspectRatio, NearClipDistance, FarClipDistance);
             }
-
         }
     }
 }

@@ -11,14 +11,23 @@ namespace Tracks
         public const int WindowHeight = 600;
         public static readonly Color4 WindowClearColor = new Color4(30, 30, 30, 0);
 
-        // Camera
-        public const float CameraAspectRatio = GameSettings.WindowWidth / (float) GameSettings.WindowHeight;
-        public const float CameraFieldOfView = 60f;
-        public const float CameraNearClippingDistance = 0.1f;
-        public const float CameraFarClippingDistance = 100f;
+        // Main Camera
+        public const float MainCameraAspectRatio = WindowWidth / (float)WindowHeight;
+        public const float MainCameraFieldOfView = 60f;
+        public const float MainCameraNearClipDistance = 0.1f;
+        public const float MainCameraFarClipDistance = 100f;
 
-        // Stats
-        public const int StatsFpsSampleCount = 100;
+        // UI Camera
+        public static readonly Box2 UiCameraBounds = new Box2(0, 0, WindowWidth, WindowHeight);
+        public const float UiCameraNearClipDistance = -1f;
+        public const float UiCameraFarClipDistance =1f;
+
+        // Diagnostics
+        public const int DiagnosticsFpsSampleCount = 100;
+        public static readonly Vector3 DiagnosticsPosition = new Vector3(20, WindowHeight - 20, 0);
+        public static readonly float DiagnosticsScale = 0.5f;
+        public static readonly Vector2 DiagnosticsRowOffset = new Vector2(0, -20);
+        public static readonly Vector2 DiagnosticsColumnOffset = new Vector2(150, 0);
 
         // Splash
         public const string SplashScreenTextureFileName = "Splash.png";

@@ -29,12 +29,11 @@ namespace Tracks
 
         private ShaderProgram ShaderProgram { get; set; }
         private ResourceManager ResourceManager { get; set; }
-        private WindowManager WindowManager { get; set; }
+        private CameraComponent UiCamera { get; set; }
 
         public TileRenderer()
         {
             ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
-            WindowManager = ServiceLocator.Instance.GetService<WindowManager>();
 
             InitializeShaders();
             InitializeVertexBufferObject();
@@ -79,6 +78,12 @@ namespace Tracks
 
         public void Draw(Tile tile)
         {
+            // TODO: Need to make this renderer object have some lifecycle functions, and move this out
+            if (UiCamera == null)
+            {
+                UiCamera = ServiceLocator.Instance.GetService<CameraComponent>("UI Camera");
+            }
+
             GL.UseProgram(ShaderProgram.Handle);
             GL.BindTexture(TextureTarget.Texture2DArray, tile.TextureArray.Handle);
             GL.BindVertexArray(VertexArrayHandle);
@@ -86,6 +91,10 @@ namespace Tracks
             Matrix4 model = GetModelMatrix(tile);
             int modelUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "model");
             GL.UniformMatrix4(modelUniformHandle, false, ref model);
+
+            Matrix4 view = GetViewMatrix();
+            int viewUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "view");
+            GL.UniformMatrix4(viewUniformHandle, false, ref view);
 
             Matrix4 projection = GetProjectionMatrix();
             int projectionUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "projection");
@@ -108,22 +117,30 @@ namespace Tracks
         {
             Matrix4 model = Matrix4.Identity;
 
+            // Always scale, then rotation, then translation
+            // And in OpenTK, it's represented in that order
+
             // Quad vertices are from 0,0 to 1,1, so this scaling
             // enables using the same VAO for all sprites
             model *= Matrix4.CreateScale(tile.TextureArray.TileWidth, tile.TextureArray.TileWidth, 1.0f);
 
-            // Positions the sprite correctly
-            model *= Matrix4.CreateTranslation(new Vector3(tile.Position.X, tile.Position.Y, 0));
-
+            // Applies any custom scaling
             model *= Matrix4.CreateScale(tile.Scale.X, tile.Scale.Y, 1.0f);
+
+            // Positions the tile correctly
+            model *= Matrix4.CreateTranslation(new Vector3(tile.Position.X, tile.Position.Y, 0));
 
             return model;
         }
 
+        private Matrix4 GetViewMatrix()
+        {
+            return UiCamera.ViewMatrix;
+        }
+
         private Matrix4 GetProjectionMatrix()
         {
-            Matrix4 projection = Matrix4.CreateOrthographic(WindowManager.Width, WindowManager.Height, -1.0f, 1.0f);
-            return projection;
+            return UiCamera.ProjectionMatrix;
         }
     }
 }
