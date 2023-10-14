@@ -17,6 +17,7 @@ namespace Tracks
             CreateUiCamera();
 
             CreateTestCubeRing();
+            CreateLowPolyCar();
 
             // This needs to be at the end of the draw list to make blending work properly with depth testing
             CreateDebugGrid();
@@ -99,6 +100,17 @@ namespace Tracks
 
                 CreateTestCube(position, Quaternion.Identity, Vector3.One * scale, textureId);
             }
+        }
+        private GameObject CreateLowPolyCar()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Low Poly Car");
+            gameObject.Transform.Rotation = Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.DegreesToRadians(-90));
+            gameObject.Transform.Scale = new Vector3(0.5f, 1, 0.2f);
+
+            ModelComponent modelComponent = gameObject.AddComponent<ModelComponent>();
+            modelComponent.ModelId = (int)GameSettings.ModelId.LowPolyCar;
+
+            return gameObject;
         }
 
         private GameObject CreateTestCube(Vector3 position, Quaternion rotation, Vector3 scale, int textureId)

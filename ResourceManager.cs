@@ -1,5 +1,6 @@
 ﻿
 using NLog;
+using static Tracks.GameSettings;
 
 namespace Tracks
 {
@@ -10,17 +11,19 @@ namespace Tracks
         public string ResourcesDirectory { get; }
         public string TexturesDirectory { get; }
         public string ShadersDirectory { get; }
+        public string ModelsDirectory { get; }
 
         private Dictionary<int, Texture> Textures { get; } = new Dictionary<int, Texture>();
         private Dictionary<int, TextureArray> TextureArrays { get; } = new Dictionary<int, TextureArray>();
-
         private Dictionary<string, ShaderProgram> ShaderPrograms { get; } = new Dictionary<string, ShaderProgram>();
+        private Dictionary<int, Model> Models { get; } = new Dictionary<int, Model>();
 
         public ResourceManager()
         {
             ResourcesDirectory = Path.Combine(Environment.CurrentDirectory, GameSettings.ResourcesDirectoryName);
             TexturesDirectory = Path.Combine(ResourcesDirectory, GameSettings.TexturesDirectoryName);
             ShadersDirectory = Path.Combine(ResourcesDirectory, GameSettings.ShadersDirectoryName);
+            ModelsDirectory = Path.Combine(ResourcesDirectory, GameSettings.ModelsDirectoryName);
         }
 
         public Texture GetTexture(int textureId)
@@ -90,6 +93,26 @@ namespace Tracks
             }
 
             return shaderProgram;
+        }
+
+        public Model GetModel(int modelId)
+        {
+            if (!Models.TryGetValue(modelId, out Model model))
+            {
+                if (!GameSettings.Models.TryGetValue(modelId, out string modelFileName))
+                {
+                    throw new Exception($"Unable to locate a file path for model: {modelId}");
+                }
+
+                Logger.Info($"Loading model: {modelFileName}");
+
+                string modelFilePath = Path.Combine(ModelsDirectory, modelFileName);
+                model = Model.LoadFromFile(modelFilePath);
+
+                Models[modelId] = model;
+            }
+
+            return model;
         }
     }
 }

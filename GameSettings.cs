@@ -53,12 +53,18 @@ namespace Tracks
         public const string TileFragmentShaderFileName = "Tile.frag";
         public const string DebugGridVertexShaderFileName = "DebugGrid.vert";
         public const string DebugGridFragmentShaderFileName = "DebugGrid.frag";
+        public const string DefaultMeshVertexShaderFileName = "DefaultMesh.vert";
+        public const string DefaultMeshFragmentShaderFileName = "DefaultMesh.frag";
+
+        // Models
+        public const string LowPolyCarModelFileName = "LowPolyCar.fbx";
 
         // Resources
         public const string ResourcesDirectoryName = "Assets";
         public const string TexturesDirectoryName = "Textures";
         public const string FontsDirectoryName = "Fonts";
         public const string ShadersDirectoryName = "Shaders";
+        public const string ModelsDirectoryName = "Models";
 
         // Textures
         public enum TextureId
@@ -92,6 +98,8 @@ namespace Tracks
             TileFragment,
             DebugGridVertex,
             DebugGridFragment,
+            DefaultMeshVertex,
+            DefaultMeshFragment,
         }
 
         public static readonly Dictionary<int, string> Shaders = new Dictionary<int, string>
@@ -104,6 +112,19 @@ namespace Tracks
             { (int)ShaderId.TileFragment, TileFragmentShaderFileName },
             { (int)ShaderId.DebugGridVertex, DebugGridVertexShaderFileName },
             { (int)ShaderId.DebugGridFragment, DebugGridFragmentShaderFileName },
+            { (int)ShaderId.DefaultMeshVertex, DefaultMeshVertexShaderFileName },
+            { (int)ShaderId.DefaultMeshFragment, DefaultMeshFragmentShaderFileName },
+        };
+
+        // Models
+        public enum ModelId
+        {
+            LowPolyCar,
+        }
+
+        public static readonly Dictionary<int, string> Models = new Dictionary<int, string>
+        {
+            { (int)ModelId.LowPolyCar, LowPolyCarModelFileName },
         };
 
         public static readonly float[] QuadVertices = new[]

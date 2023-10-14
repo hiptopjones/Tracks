@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 namespace Tracks
 {
@@ -20,6 +21,12 @@ namespace Tracks
             {
                 Handle = programHandle
             };
+        }
+
+        public void SetUniform(Matrix4 matrix, string name)
+        {
+            int uniformHandle = GL.GetUniformLocation(Handle, name);
+            GL.UniformMatrix4(uniformHandle, false, ref matrix);
         }
 
         private static int LoadShader(ShaderType shaderType, string shaderFilePath)
