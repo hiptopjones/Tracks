@@ -27,6 +27,7 @@ namespace Tracks
             AddStatisticValue("MEM", GetMemoryUsage);
             AddStatisticValue("OBJ", GetObjectCount);
             AddStatisticValue("CMP", GetComponentCount);
+            AddStatisticValue("VTX", GetVertexCount);
         }
 
         public override void Update(float deltaTime)
@@ -92,6 +93,12 @@ namespace Tracks
         {
             int componentCount = GameObjectManager.ComponentCount;
             return $"{componentCount}";
+        }
+
+        private string GetVertexCount()
+        {
+            int vertexCount = GameObjectManager.VertexCount;
+            return $"{vertexCount}";
         }
     }
 }

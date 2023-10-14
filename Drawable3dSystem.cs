@@ -2,6 +2,8 @@
 {
     internal class Drawable3dSystem
     {
+        public int VertexCount => DrawableComponents.Where(x => x.Owner.HasComponent<ModelComponent>()).Sum(x => x.Owner.GetComponent<ModelComponent>().VertexCount);
+
         private List<Drawable3dComponent> DrawableComponents { get; } = new List<Drawable3dComponent>();
 
         public void ProcessAdditions(IEnumerable<GameObject> newGameObjects)

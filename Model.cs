@@ -17,7 +17,9 @@ namespace Tracks
         public static Model LoadFromFile(string modelFilePath)
         {
             AssimpContext importer = new AssimpContext();
-            AssimpScene scene = importer.ImportFile(modelFilePath, PostProcessSteps.Triangulate);
+            AssimpScene scene = importer.ImportFile(
+                modelFilePath,
+                PostProcessSteps.Triangulate | PostProcessSteps.JoinIdenticalVertices);
 
             List<Mesh> meshes = new List<Mesh>();
             ProcessNode(scene, scene.RootNode, meshes);

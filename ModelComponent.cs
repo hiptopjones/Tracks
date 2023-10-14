@@ -17,6 +17,8 @@ namespace Tracks
         public int VertexShaderId { get; set; } = (int)GameSettings.ShaderId.DefaultMeshVertex;
         public int FragmentShaderId { get; set; } = (int)GameSettings.ShaderId.DefaultMeshFragment;
 
+        public int VertexCount => Model.Meshes.Sum(x => x.Vertices.Count);
+
         private ShaderProgram ShaderProgram { get; set; }
         private Model Model { get; set; }
 

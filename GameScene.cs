@@ -78,6 +78,8 @@ namespace Tracks
             diagnosticsComponent.RowOffset = GameSettings.DiagnosticsRowOffset;
             diagnosticsComponent.ColumnOffset = GameSettings.DiagnosticsColumnOffset;
 
+            ServiceLocator.Instance.ProvideService<DiagnosticsComponent>(diagnosticsComponent);
+
             return gameObject;
         }
 

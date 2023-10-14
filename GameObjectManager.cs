@@ -4,6 +4,7 @@
     {
         public int GameObjectCount => CoreSystem.GameObjectCount;
         public int ComponentCount => CoreSystem.ComponentCount;
+        public int VertexCount => Drawable3dSystem.VertexCount;
 
         // Systems
         private CoreSystem CoreSystem { get; } = new CoreSystem();
