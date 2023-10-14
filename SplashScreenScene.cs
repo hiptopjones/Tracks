@@ -1,12 +1,11 @@
 ﻿using OpenTK.Mathematics;
-using static Tracks.GameSettings;
 
 namespace Tracks
 {
     internal class SplashScreenScene : Scene
     {
         public int TransitionSceneId { get; set; }
-        public int TextureId { get; set; }
+        public TextureId TextureId { get; set; }
 
         private Sprite Sprite { get; set; }
 

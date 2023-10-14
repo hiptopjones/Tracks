@@ -1,6 +1,4 @@
-﻿
-using NLog;
-using static Tracks.GameSettings;
+﻿using NLog;
 
 namespace Tracks
 {
@@ -13,10 +11,10 @@ namespace Tracks
         public string ShadersDirectory { get; }
         public string ModelsDirectory { get; }
 
-        private Dictionary<int, Texture> Textures { get; } = new Dictionary<int, Texture>();
-        private Dictionary<int, TextureArray> TextureArrays { get; } = new Dictionary<int, TextureArray>();
+        private Dictionary<TextureId, Texture> Textures { get; } = new Dictionary<TextureId, Texture>();
+        private Dictionary<TextureId, TextureArray> TextureArrays { get; } = new Dictionary<TextureId, TextureArray>();
         private Dictionary<string, ShaderProgram> ShaderPrograms { get; } = new Dictionary<string, ShaderProgram>();
-        private Dictionary<int, Model> Models { get; } = new Dictionary<int, Model>();
+        private Dictionary<ModelId, Model> Models { get; } = new Dictionary<ModelId, Model>();
 
         public ResourceManager()
         {
@@ -26,7 +24,7 @@ namespace Tracks
             ModelsDirectory = Path.Combine(ResourcesDirectory, GameSettings.ModelsDirectoryName);
         }
 
-        public Texture GetTexture(int textureId)
+        public Texture GetTexture(TextureId textureId)
         {
             if (!Textures.TryGetValue(textureId, out Texture texture))
             {
@@ -46,7 +44,7 @@ namespace Tracks
             return texture;
         }
 
-        public TextureArray GetTextureArray(int textureId, int tileWidth, int tileHeight, int tileCount)
+        public TextureArray GetTextureArray(TextureId textureId, int tileWidth, int tileHeight, int tileCount)
         {
             if (!TextureArrays.TryGetValue(textureId, out TextureArray texture))
             {
@@ -66,7 +64,7 @@ namespace Tracks
             return texture;
         }
 
-        public ShaderProgram GetShaderProgram(int vertexShaderId, int fragmentShaderId)
+        public ShaderProgram GetShaderProgram(ShaderId vertexShaderId, ShaderId fragmentShaderId)
         {
             string shaderProgramKey = $"{vertexShaderId}/{fragmentShaderId}";
 
@@ -95,7 +93,7 @@ namespace Tracks
             return shaderProgram;
         }
 
-        public Model GetModel(int modelId)
+        public Model GetModel(ModelId modelId)
         {
             if (!Models.TryGetValue(modelId, out Model model))
             {

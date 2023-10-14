@@ -67,64 +67,35 @@ namespace Tracks
         public const string ModelsDirectoryName = "Models";
 
         // Textures
-        public enum TextureId
+        public static readonly Dictionary<TextureId, string> Textures = new Dictionary<TextureId, string>
         {
-            SplashScreen,
-            TestPattern,
-            TestPalette,
-            Blank,
-            DebugFont,
-            GridPattern,
-        }
-
-        public static readonly Dictionary<int, string> Textures = new Dictionary<int, string>
-        {
-            { (int)TextureId.SplashScreen, SplashScreenTextureFileName },
-            { (int)TextureId.TestPattern, TestPatternTextureFileName },
-            { (int)TextureId.TestPalette, TestPaletteTextureFileName },
-            { (int)TextureId.Blank, BlankTextureFileName },
-            { (int)TextureId.DebugFont, DebugFontTextureFileName },
-            { (int)TextureId.GridPattern, GridPatternTextureFileName },
+            { TextureId.SplashScreen, SplashScreenTextureFileName },
+            { TextureId.TestPattern, TestPatternTextureFileName },
+            { TextureId.TestPalette, TestPaletteTextureFileName },
+            { TextureId.Blank, BlankTextureFileName },
+            { TextureId.DebugFont, DebugFontTextureFileName },
+            { TextureId.GridPattern, GridPatternTextureFileName },
         };
 
         // Shaders
-        public enum ShaderId
+        public static readonly Dictionary<ShaderId, string> Shaders = new Dictionary<ShaderId, string>
         {
-            DefaultVertex,
-            DefaultFragment,
-            SpriteVertex,
-            SpriteFragment,
-            TileVertex,
-            TileFragment,
-            DebugGridVertex,
-            DebugGridFragment,
-            DefaultMeshVertex,
-            DefaultMeshFragment,
-        }
-
-        public static readonly Dictionary<int, string> Shaders = new Dictionary<int, string>
-        {
-            { (int)ShaderId.DefaultVertex, DefaultVertexShaderFileName },
-            { (int)ShaderId.DefaultFragment, DefaultFragmentShaderFileName },
-            { (int)ShaderId.SpriteVertex, SpriteVertexShaderFileName },
-            { (int)ShaderId.SpriteFragment, SpriteFragmentShaderFileName },
-            { (int)ShaderId.TileVertex, TileVertexShaderFileName },
-            { (int)ShaderId.TileFragment, TileFragmentShaderFileName },
-            { (int)ShaderId.DebugGridVertex, DebugGridVertexShaderFileName },
-            { (int)ShaderId.DebugGridFragment, DebugGridFragmentShaderFileName },
-            { (int)ShaderId.DefaultMeshVertex, DefaultMeshVertexShaderFileName },
-            { (int)ShaderId.DefaultMeshFragment, DefaultMeshFragmentShaderFileName },
+            { ShaderId.DefaultVertex, DefaultVertexShaderFileName },
+            { ShaderId.DefaultFragment, DefaultFragmentShaderFileName },
+            { ShaderId.SpriteVertex, SpriteVertexShaderFileName },
+            { ShaderId.SpriteFragment, SpriteFragmentShaderFileName },
+            { ShaderId.TileVertex, TileVertexShaderFileName },
+            { ShaderId.TileFragment, TileFragmentShaderFileName },
+            { ShaderId.DebugGridVertex, DebugGridVertexShaderFileName },
+            { ShaderId.DebugGridFragment, DebugGridFragmentShaderFileName },
+            { ShaderId.DefaultMeshVertex, DefaultMeshVertexShaderFileName },
+            { ShaderId.DefaultMeshFragment, DefaultMeshFragmentShaderFileName },
         };
 
         // Models
-        public enum ModelId
+        public static readonly Dictionary<ModelId, string> Models = new Dictionary<ModelId, string>
         {
-            LowPolyCar,
-        }
-
-        public static readonly Dictionary<int, string> Models = new Dictionary<int, string>
-        {
-            { (int)ModelId.LowPolyCar, LowPolyCarModelFileName },
+            { ModelId.LowPolyCar, LowPolyCarModelFileName },
         };
 
         public static readonly float[] QuadVertices = new[]
@@ -184,5 +155,34 @@ namespace Tracks
             -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
         };
+    }
+
+    public enum ModelId
+    {
+        LowPolyCar,
+    }
+
+    public enum ShaderId
+    {
+        DefaultVertex,
+        DefaultFragment,
+        SpriteVertex,
+        SpriteFragment,
+        TileVertex,
+        TileFragment,
+        DebugGridVertex,
+        DebugGridFragment,
+        DefaultMeshVertex,
+        DefaultMeshFragment,
+    }
+
+    public enum TextureId
+    {
+        SplashScreen,
+        TestPattern,
+        TestPalette,
+        Blank,
+        DebugFont,
+        GridPattern,
     }
 }

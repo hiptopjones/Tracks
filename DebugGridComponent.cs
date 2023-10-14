@@ -35,8 +35,8 @@ namespace Tracks
 
         private void InitializeShaders()
         {
-            int vertexShaderId = (int)ShaderId.DebugGridVertex;
-            int fragmentShaderId = (int)ShaderId.DebugGridFragment;
+            ShaderId vertexShaderId = ShaderId.DebugGridVertex;
+            ShaderId fragmentShaderId = ShaderId.DebugGridFragment;
 
             ShaderProgram = ResourceManager.GetShaderProgram(vertexShaderId, fragmentShaderId);
         }

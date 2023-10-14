@@ -1,11 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Tracks.GameSettings;
 
 namespace Tracks
 {
@@ -41,8 +35,8 @@ namespace Tracks
 
         private void InitializeShaders()
         {
-            int vertexShaderId = (int)ShaderId.TileVertex;
-            int fragmentShaderId = (int)ShaderId.TileFragment;
+            ShaderId vertexShaderId = ShaderId.TileVertex;
+            ShaderId fragmentShaderId = ShaderId.TileFragment;
 
             ShaderProgram = ResourceManager.GetShaderProgram(vertexShaderId, fragmentShaderId);
         }

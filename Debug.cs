@@ -44,17 +44,17 @@ namespace Tracks
             TextDrawables.Add(text);
         }
 
-        public static void DrawImage(int textureId, Vector2 position)
+        public static void DrawImage(TextureId textureId, Vector2 position)
         {
             DrawImage(textureId, position, Vector2.One);
         }
 
-        public static void DrawImage(int textureId, Vector2 position, Vector2 scale)
+        public static void DrawImage(TextureId textureId, Vector2 position, Vector2 scale)
         {
             DrawImage(textureId, position, scale, Vector2.Zero);
         }
 
-        public static void DrawImage(int textureId, Vector2 position, Vector2 scale, Vector2 normalizedOrigin)
+        public static void DrawImage(TextureId textureId, Vector2 position, Vector2 scale, Vector2 normalizedOrigin)
         {
             ResourceManager resourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
             Texture texture = resourceManager.GetTexture(textureId);

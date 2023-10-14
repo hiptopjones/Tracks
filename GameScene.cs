@@ -1,6 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using static System.Formats.Asn1.AsnWriter;
-using static Tracks.GameSettings;
 
 namespace Tracks
 {
@@ -94,10 +92,10 @@ namespace Tracks
 
                 float scale = ((degrees % 60) + 30) / 90f;
 
-                int textureId = (int)TextureId.TestPalette;
+                TextureId textureId = TextureId.TestPalette;
                 if (degrees == 0)
                 {
-                    textureId = (int)TextureId.TestPattern;
+                    textureId = TextureId.TestPattern;
                 }
 
                 CreateTestCube(position, Quaternion.Identity, Vector3.One * scale, textureId);
@@ -110,12 +108,12 @@ namespace Tracks
             gameObject.Transform.Scale = new Vector3(0.5f, 1, 0.2f);
 
             ModelComponent modelComponent = gameObject.AddComponent<ModelComponent>();
-            modelComponent.ModelId = (int)GameSettings.ModelId.LowPolyCar;
+            modelComponent.ModelId = ModelId.LowPolyCar;
 
             return gameObject;
         }
 
-        private GameObject CreateTestCube(Vector3 position, Quaternion rotation, Vector3 scale, int textureId)
+        private GameObject CreateTestCube(Vector3 position, Quaternion rotation, Vector3 scale, TextureId textureId)
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Test Cube");
             gameObject.Transform.Position = position;
@@ -125,8 +123,8 @@ namespace Tracks
             Test3dComponent drawable3dComponent = gameObject.AddComponent<Test3dComponent>();
             drawable3dComponent.Vertices = GameSettings.CubeVertices;
             drawable3dComponent.TextureId = textureId;
-            drawable3dComponent.VertexShaderId = (int)ShaderId.DefaultVertex;
-            drawable3dComponent.FragmentShaderId = (int)ShaderId.DefaultFragment;
+            drawable3dComponent.VertexShaderId = ShaderId.DefaultVertex;
+            drawable3dComponent.FragmentShaderId = ShaderId.DefaultFragment;
 
             return gameObject;
         }

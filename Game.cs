@@ -66,7 +66,7 @@ namespace Tracks
             int gameSceneId = SceneManager.AddScene(gameScene);
 
             SplashScreenScene splashScene = new SplashScreenScene();
-            splashScene.TextureId = (int)GameSettings.TextureId.SplashScreen;
+            splashScene.TextureId = TextureId.SplashScreen;
             splashScene.TransitionSceneId = gameSceneId;
             int splashSceneId = SceneManager.AddScene(splashScene);
 

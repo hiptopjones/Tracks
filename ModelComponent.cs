@@ -1,21 +1,14 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Tracks.GameSettings;
 
 namespace Tracks
 {
     internal class ModelComponent : Drawable3dComponent
     {
-        public int ModelId { get; set; }
+        public ModelId ModelId { get; set; }
 
-        public int VertexShaderId { get; set; } = (int)GameSettings.ShaderId.DefaultMeshVertex;
-        public int FragmentShaderId { get; set; } = (int)GameSettings.ShaderId.DefaultMeshFragment;
+        public ShaderId VertexShaderId { get; set; } = ShaderId.DefaultMeshVertex;
+        public ShaderId FragmentShaderId { get; set; } = ShaderId.DefaultMeshFragment;
 
         public int VertexCount => Model.Meshes.Sum(x => x.Vertices.Count);
 

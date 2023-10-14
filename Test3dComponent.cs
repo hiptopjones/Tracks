@@ -9,9 +9,9 @@ namespace Tracks
         public float[] Vertices { get; set; }
         public uint[] Indices { get; set; }
 
-        public int VertexShaderId { get; set; }
-        public int FragmentShaderId { get; set; }
-        public int TextureId { get; set; }
+        public ShaderId VertexShaderId { get; set; }
+        public ShaderId FragmentShaderId { get; set; }
+        public TextureId TextureId { get; set; }
         public Color4 Color { get; set; } = Color4.White;
 
         public bool IsWireframe { get; set; }

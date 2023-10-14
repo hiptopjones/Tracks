@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using static Tracks.GameSettings;
 
 namespace Tracks
 {
@@ -14,7 +13,7 @@ namespace Tracks
 
         private void InitializeAtlas()
         {
-            int debugFontTextureId = (int)TextureId.DebugFont;
+            TextureId debugFontTextureId = TextureId.DebugFont;
 
             ResourceManager resourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
 
