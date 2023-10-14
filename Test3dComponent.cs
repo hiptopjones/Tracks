@@ -14,6 +14,8 @@ namespace Tracks
         public int TextureId { get; set; }
         public Color4 Color { get; set; } = Color4.White;
 
+        public bool IsWireframe { get; set; }
+
         private int VertexArrayHandle { get; set; }
         private int VertexBufferHandle { get; set; }
         private int ElementBufferHandle { get; set; }
@@ -24,8 +26,6 @@ namespace Tracks
         private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; }
         private CameraComponent MainCamera { get; set; }
-
-        private TimeSpan ElapsedTime { get; set; }
 
         public override void Awake()
         {
@@ -77,11 +77,6 @@ namespace Tracks
             GL.BindVertexArray(0);
         }
 
-        public override void Update(float deltaTime)
-        {
-            ElapsedTime += TimeSpan.FromSeconds(deltaTime);
-        }
-
         public override void Draw()
         {
             GL.UseProgram(ShaderProgram.Handle);
@@ -103,6 +98,14 @@ namespace Tracks
             int colorUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "color");
             GL.Uniform4(colorUniformHandle, Color);
 
+            if (IsWireframe)
+            {
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+
+                int isWireframeUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "isWireframe");
+                GL.Uniform1(isWireframeUniformHandle, Convert.ToInt32(IsWireframe));
+            }
+
             if (UseElementArray)
             {
                 GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
@@ -110,6 +113,11 @@ namespace Tracks
             else
             {
                 GL.DrawArrays(PrimitiveType.Triangles, 0, VertexCount);
+            }
+
+            if (IsWireframe)
+            {
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             }
 
             GL.BindVertexArray(0);  
