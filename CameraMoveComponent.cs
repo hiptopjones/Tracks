@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Tracks
 {
-    internal class ArcBallComponent : Component
+    internal class CameraMoveComponent : Component
     {
         public float MouseRotateSensitivity { get; set; } = 0.1f;
         public float MouseMoveSensitivity { get; set; } = 0.01f;

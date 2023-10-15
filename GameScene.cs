@@ -37,7 +37,7 @@ namespace Tracks
             GameObject gameObject = GameObjectManager.CreateGameObject("Main Camera");
             gameObject.Transform.Position = new Vector3(0, 0, 1);
 
-            ArcBallComponent exploreComponent = gameObject.AddComponent<ArcBallComponent>();
+            CameraMoveComponent exploreComponent = gameObject.AddComponent<CameraMoveComponent>();
 
             CameraComponent cameraComponent = gameObject.AddComponent<CameraComponent>();
             cameraComponent.AspectRatio = GameSettings.MainCameraAspectRatio;
