@@ -104,8 +104,6 @@ namespace Tracks
         private GameObject CreateLowPolyCar()
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Low Poly Car");
-            gameObject.Transform.Rotation = Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.DegreesToRadians(-90));
-            gameObject.Transform.Scale = new Vector3(0.5f, 1, 0.2f);
 
             ModelComponent modelComponent = gameObject.AddComponent<ModelComponent>();
             modelComponent.ModelId = ModelId.LowPolyCar;

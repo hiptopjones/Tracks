@@ -29,19 +29,14 @@ namespace Tracks
 
         public override void Draw()
         {
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-
             GL.UseProgram(ShaderProgram.Handle);
 
-            ShaderProgram.SetUniform(GetModelMatrix(), "model");
-            ShaderProgram.SetUniform(GetViewMatrix(), "view");
-            ShaderProgram.SetUniform(GetProjectionMatrix(), "projection");
+            ShaderProgram.SetUniform("view", GetViewMatrix());
+            ShaderProgram.SetUniform("projection", GetProjectionMatrix());
 
-            Model.Draw(ShaderProgram);
+            Model.Draw(ShaderProgram, GetModelMatrix());
 
             GL.UseProgram(0);
-
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
         }
 
         private Matrix4 GetModelMatrix()

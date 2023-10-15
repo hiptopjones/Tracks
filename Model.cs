@@ -1,17 +1,18 @@
 ﻿using Assimp;
+using NLog;
 using OpenTK.Mathematics;
-using System.Drawing;
 using AssimpFace = Assimp.Face;
+using AssimpMaterial = Assimp.Material;
 using AssimpMesh = Assimp.Mesh;
 using AssimpNode = Assimp.Node;
 using AssimpScene = Assimp.Scene;
-using AssimpVector2D = Assimp.Vector2D;
-using AssimpVector3D = Assimp.Vector3D;
 
 namespace Tracks
 {
     internal class Model
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         public List<Mesh> Meshes { get; set; } = new List<Mesh>();
 
         public static Model LoadFromFile(string modelFilePath)
@@ -30,10 +31,13 @@ namespace Tracks
             };
         }
 
-        public void Draw(ShaderProgram shaderProgram)
+        public void Draw(ShaderProgram shaderProgram, Matrix4 modelTransform)
         {
             foreach (Mesh mesh in Meshes)
             {
+                Matrix4 meshTransform = modelTransform * mesh.Transform;
+                shaderProgram.SetUniform("model", meshTransform);
+
                 mesh.Draw(shaderProgram);
             }
         }
@@ -45,7 +49,7 @@ namespace Tracks
                 int meshIndex = node.MeshIndices[i];
                 AssimpMesh mesh = scene.Meshes[meshIndex];
 
-                meshes.Add(ProcessMesh(mesh));
+                meshes.Add(ProcessMesh(scene, node, mesh));
             }
 
             for (int i = 0; i < node.ChildCount; i++)
@@ -54,22 +58,24 @@ namespace Tracks
             }
         }
 
-        private static Mesh ProcessMesh(AssimpMesh mesh)
+        private static Mesh ProcessMesh(AssimpScene scene, AssimpNode node, AssimpMesh mesh)
         {
+            string name = $"{node.Name}.{mesh.Name}";
+
             List<Vertex> vertices = new List<Vertex>();
             List<int> indices = new List<int>();
-            List<Texture> textures = new List<Texture>();
+            List<ColorMap> colorMaps = new List<ColorMap>();
 
             for (int i = 0; i < mesh.VertexCount; i++)
             {
                 Vertex vertex = new Vertex
                 {
-                    Position = ToVector3(mesh.Vertices[i])
+                    Position = mesh.Vertices[i].ToVector3()
                 };
 
                 if (mesh.HasTextureCoords(0))
                 {
-                    vertex.TexCoords = ToVector3(mesh.TextureCoordinateChannels[0][i]).Xy;
+                    vertex.TexCoords = mesh.TextureCoordinateChannels[0][i].ToVector3().Xy;
                 }
 
                 vertices.Add(vertex);
@@ -81,12 +87,56 @@ namespace Tracks
                 indices.AddRange(face.Indices);
             }
 
-            return new Mesh(vertices, indices, textures);
+            int materialIndex = mesh.MaterialIndex;
+            AssimpMaterial material = scene.Materials[materialIndex];
+
+            ColorMap diffuseColorMap = new ColorMap
+            {
+                Name = "diffuse",
+                Color = material.ColorDiffuse.ToColor4(),
+                Texture = LoadTexture(material.TextureDiffuse)
+            };
+
+            colorMaps.Add(diffuseColorMap);
+
+            Matrix4 transform = GetExpandedTransform(node);
+
+            return new Mesh(name, vertices, indices, colorMaps, transform);
         }
 
-        private static Vector3 ToVector3(AssimpVector3D source)
+        private static Matrix4 GetExpandedTransform(AssimpNode node)
         {
-            return new Vector3(source.X, source.Y, source.Z);
+            Matrix4 fullTransform = node.Transform.ToMatrix4();
+
+            while (node.Parent != null)
+            {
+                node = node.Parent;
+
+                Matrix4 nodeTransform = node.Transform.ToMatrix4();
+                fullTransform = fullTransform * nodeTransform;
+            }
+
+            return fullTransform;
+        }
+
+        private static Texture LoadTexture(TextureSlot textureSlot)
+        {
+            Texture texture = null;
+
+            if (!string.IsNullOrEmpty(textureSlot.FilePath))
+            {
+                try
+                {
+                    texture = Texture.LoadFromFile(textureSlot.FilePath);
+                }
+                catch (Exception ex)
+                {
+                    // Some models have bad texture references, so don't take down the program
+                    Logger.Error(ex, $"Error loading texture: '{textureSlot.FilePath}'");
+                }
+            }
+
+            return texture;
         }
     }
 }

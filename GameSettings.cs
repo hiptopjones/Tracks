@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using static System.Net.WebRequestMethods;
 
 namespace Tracks
 {
@@ -15,12 +16,12 @@ namespace Tracks
         public const float MainCameraAspectRatio = WindowWidth / (float)WindowHeight;
         public const float MainCameraFieldOfView = 60f;
         public const float MainCameraNearClipDistance = 0.1f;
-        public const float MainCameraFarClipDistance = 100f;
+        public const float MainCameraFarClipDistance = 10000f;
 
         // UI Camera
         public static readonly Box2 UiCameraBounds = new Box2(0, 0, WindowWidth, WindowHeight);
         public const float UiCameraNearClipDistance = -1f;
-        public const float UiCameraFarClipDistance =1f;
+        public const float UiCameraFarClipDistance = 1f;
 
         // Diagnostics
         public const int DiagnosticsFpsSampleCount = 100;
@@ -58,6 +59,9 @@ namespace Tracks
 
         // Models
         public const string LowPolyCarModelFileName = "LowPolyCar.fbx";
+        public const string CartoonCarModelFileName = "CartoonCar.fbx";
+        public const string RaceCarModelFileName = "RaceCar.fbx";
+        public const string JeepModelFileName = "Jeep.fbx";
 
         // Resources
         public const string ResourcesDirectoryName = "Assets";
@@ -95,7 +99,10 @@ namespace Tracks
         // Models
         public static readonly Dictionary<ModelId, string> Models = new Dictionary<ModelId, string>
         {
-            { ModelId.LowPolyCar, LowPolyCarModelFileName },
+            { ModelId.LowPolyCar, LowPolyCarModelFileName }, // https://sketchfab.com/3d-models/low-poly-car-fcdb0c27f7d04d47a518a249ae7093a2
+            { ModelId.CartoonCar, CartoonCarModelFileName }, // https://www.turbosquid.com/3d-models/cartoon-car-3d-model-2127680
+            { ModelId.RaceCar, RaceCarModelFileName }, // https://www.turbosquid.com/3d-models/3d-model-car-lowpoly-2119296
+            { ModelId.Jeep, JeepModelFileName }, // https://www.turbosquid.com/3d-models/3d-model-lowpoy-suv-car-1937266
         };
 
         public static readonly float[] QuadVertices = new[]
@@ -160,6 +167,9 @@ namespace Tracks
     public enum ModelId
     {
         LowPolyCar,
+        CartoonCar,
+        RaceCar,
+        Jeep,
     }
 
     public enum ShaderId

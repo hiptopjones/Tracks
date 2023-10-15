@@ -1,5 +1,7 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using Assimp.Unmanaged;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using System.Xml.Linq;
 
 namespace Tracks
 {
@@ -22,11 +24,57 @@ namespace Tracks
                 Handle = programHandle
             };
         }
-
-        public void SetUniform(Matrix4 matrix, string name)
+        
+        public int GetUniformLocation(string name)
         {
             int uniformHandle = GL.GetUniformLocation(Handle, name);
+            if (uniformHandle < 0)
+            {
+                throw new Exception($"Unable to get uniform location: '{name}'");
+            }
+
+            return uniformHandle;
+        }
+
+        public void SetUniform(string name, Matrix4 matrix)
+        {
+            int uniformHandle = GetUniformLocation(name);
             GL.UniformMatrix4(uniformHandle, false, ref matrix);
+        }
+
+        public void SetUniform(string name, bool value)
+        {
+            SetUniform(name, Convert.ToInt32(value));
+        }
+
+        public void SetUniform(string name, int value)
+        {
+            int uniformHandle = GetUniformLocation(name);
+            GL.Uniform1(uniformHandle, value);
+        }
+
+        public void SetUniform(string name, Color4 value)
+        {
+            int uniformHandle = GetUniformLocation(name);
+            GL.Uniform4(uniformHandle, value);
+        }
+
+        public void SetUniform(ColorMap colorMap)
+        {
+            string namePrefix = $"map_{colorMap.Name}.";
+            bool hasTexture = colorMap.Texture != null;
+
+            SetUniform(namePrefix + "color", colorMap.Color);
+            SetUniform(namePrefix + "has_tex", hasTexture);
+
+            if (hasTexture)
+            {
+                // TODO: If attaching multiple textures, will need to index to the proper texture unit
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, colorMap.Texture.Handle);
+
+                SetUniform(namePrefix + "tex", 0);
+            }
         }
 
         private static int LoadShader(ShaderType shaderType, string shaderFilePath)
