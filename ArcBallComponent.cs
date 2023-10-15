@@ -12,8 +12,6 @@ namespace Tracks
 {
     internal class ArcBallComponent : Component
     {
-        public float TranslationSpeed { get; set; } = 5;
-
         public float MouseRotateSensitivity { get; set; } = 0.1f;
         public float MouseMoveSensitivity { get; set; } = 0.01f;
         public float MouseWheelSensitivity { get; set; } = 0.1f;
@@ -106,8 +104,17 @@ namespace Tracks
             {
                 if (InputManager.IsKeyPressed(Keys.LeftAlt) || InputManager.IsKeyPressed(Keys.RightAlt))
                 {
+                    Debug.DrawText("ORBIT", new Vector2(50, 50), Color4.Red, 0.5f);
+
                     // ACTION: Orbit around the target
                     Vector2 mouseDelta = InputManager.MouseMoveDelta * MouseRotateSensitivity;
+
+                    // Use the shift key to do finer movements
+                    if (InputManager.IsKeyPressed(Keys.LeftShift) || InputManager.IsKeyPressed(Keys.RightShift))
+                    {
+                        Debug.DrawText("SLOW", new Vector2(100, 50), Color4.Red, 0.5f);
+                        mouseDelta /= 10;
+                    }
 
                     if (mouseDelta.X != 0 || mouseDelta.Y != 0)
                     {
@@ -124,21 +131,66 @@ namespace Tracks
                 }
                 else
                 {
+                    Debug.DrawText("SLIDE", new Vector2(50, 50), Color4.Red, 0.5f);
+
                     // ACTION: Slide left/right and up/down
                     Vector2 mouseDelta = InputManager.MouseMoveDelta * MouseMoveSensitivity;
 
-                    Vector3 offsetRight = Owner.Transform.Right * -mouseDelta.X;
-                    Vector3 offsetUp = Owner.Transform.Up * mouseDelta.Y;
+                    // Use the shift key to do finer movements
+                    if (InputManager.IsKeyPressed(Keys.LeftShift) || InputManager.IsKeyPressed(Keys.RightShift))
+                    {
+                        Debug.DrawText("SLOW", new Vector2(100, 50), Color4.Red, 0.5f);
+                        mouseDelta /= 10;
+                    }
+
+                    // Increase slide speed as the distance from the focused point increases
+                    float slideSpeed = (float)Math.Max(1, OrbitDistance / 3);
+
+                    Vector3 offsetRight = Owner.Transform.Right * -mouseDelta.X * slideSpeed;
+                    Vector3 offsetUp = Owner.Transform.Up * mouseDelta.Y * slideSpeed;
 
                     Owner.Transform.Position += offsetRight + offsetUp;
                 }
             }
             else if (InputManager.IsMousePressed(MouseButton.Button2))
             {
-                if (InputManager.IsKeyPressed(Keys.LeftShift) || InputManager.IsKeyPressed(Keys.RightShift))
+                if (InputManager.IsKeyPressed(Keys.LeftAlt) || InputManager.IsKeyPressed(Keys.RightAlt))
                 {
+                    Debug.DrawText("ZOOM", new Vector2(50, 50), Color4.Red, 0.5f);
+
+                    // ACTION: Slide forward/back (like zooming in or out)
+                    Vector2 mouseDelta = InputManager.MouseMoveDelta * MouseMoveSensitivity;
+
+                    // Use the shift key for finer movements
+                    if (InputManager.IsKeyPressed(Keys.LeftShift) || InputManager.IsKeyPressed(Keys.RightShift))
+                    {
+                        Debug.DrawText("SLOW", new Vector2(100, 50), Color4.Red, 0.5f);
+                        mouseDelta /= 10;
+                    }
+
+                    // Increase mouse wheel zoom speed as the distance from the focused point increases
+                    float zoomSpeed = OrbitDistance;
+
+                    // Down zooms in, Up zooms out
+                    float signedOffset = mouseDelta.Length * Math.Sign(mouseDelta.Y) * zoomSpeed;
+
+                    Owner.Transform.Position += Owner.Transform.Forward * signedOffset;
+
+                    OrbitDistance = Math.Max(OrbitDistance - signedOffset, MinOrbitDistance);
+                }
+                else
+                {
+                    Debug.DrawText("SCAN", new Vector2(50, 50), Color4.Red, 0.5f);
+
                     // ACTION: Rotate around the camera origin (like scanning the area)
                     Vector2 mouseDelta = InputManager.MouseMoveDelta * MouseRotateSensitivity;
+                    
+                    // Use the shift key for finer movements
+                    if (InputManager.IsKeyPressed(Keys.LeftShift) || InputManager.IsKeyPressed(Keys.RightShift))
+                    {
+                        Debug.DrawText("SLOW", new Vector2(100, 50), Color4.Red, 0.5f);
+                        mouseDelta /= 10;
+                    }
 
                     if (mouseDelta.X != 0 || mouseDelta.Y != 0)
                     {
@@ -149,30 +201,32 @@ namespace Tracks
                         Owner.Transform.Rotation = Quaternion.Multiply(Quaternion.FromAxisAngle(Vector3.UnitY, radiansAroundY), Owner.Transform.Rotation);
                     }
                 }
-                else if (InputManager.IsKeyPressed(Keys.LeftAlt) || InputManager.IsKeyPressed(Keys.RightAlt))
+            }
+            else
+            {
+                // ACTION: Slide forward/back (like zooming in or out)
+                Vector2 mouseWheelDelta = InputManager.MouseWheelDelta * MouseWheelSensitivity;
+                if (mouseWheelDelta.X != 0 || mouseWheelDelta.Y != 0)
                 {
-                    // ACTION: Slide forward/back (like zooming in or out)
-                    Vector2 mouseDelta = InputManager.MouseMoveDelta * MouseMoveSensitivity;
+                    Debug.DrawText("WHEEL", new Vector2(100, 50), Color4.Red, 0.5f);
+
+                    // Use the shift key for finer movements
+                    if (InputManager.IsKeyPressed(Keys.LeftShift) || InputManager.IsKeyPressed(Keys.RightShift))
+                    {
+                        Debug.DrawText("SLOW", new Vector2(100, 50), Color4.Red, 0.5f);
+                        mouseWheelDelta /= 10;
+                    }
+
+                    // Increase mouse wheel zoom speed as the distance from the focused point increases
+                    float zoomSpeed = OrbitDistance;
 
                     // Down zooms in, Up zooms out
-                    float signedOffset = mouseDelta.Length * Math.Sign(mouseDelta.Y);
+                    float signedOffset = mouseWheelDelta.Length * Math.Sign(mouseWheelDelta.Y) * zoomSpeed;
 
                     Owner.Transform.Position += Owner.Transform.Forward * signedOffset;
 
                     OrbitDistance = Math.Max(OrbitDistance - signedOffset, MinOrbitDistance);
                 }
-            }
-            else
-            {
-                // ACTION: Slide forward/back (like zooming in or out)
-                Vector2 mouseDelta = InputManager.MouseWheelDelta * MouseWheelSensitivity;
-
-                // Down zooms in, Up zooms out
-                float signedOffset = mouseDelta.Length * Math.Sign(mouseDelta.Y);
-
-                Owner.Transform.Position += Owner.Transform.Forward * signedOffset;
-
-                OrbitDistance = Math.Max(OrbitDistance - signedOffset, MinOrbitDistance);
             }
         }
 
@@ -212,17 +266,26 @@ namespace Tracks
 
             if (direction != Vector3.Zero)
             {
+                Debug.DrawText("WASD", new Vector2(50, 50), Color4.Red, 0.5f);
+
+                // Prevents moving faster on diagonals
                 direction.Normalize();
 
-                float scaledTranslationSpeed = TranslationSpeed;
+                // Use the shift key for finer movements
                 if (InputManager.IsKeyPressed(Keys.LeftShift) || InputManager.IsKeyPressed(Keys.RightShift))
                 {
-                    scaledTranslationSpeed /= 10;
+                    Debug.DrawText("SLOW", new Vector2(100, 50), Color4.Red, 0.5f);
+                    direction /= 10;
                 }
 
-                Owner.Transform.Position += direction * scaledTranslationSpeed * deltaTime;
-                
-                // TODO: Should W and A affect orbit distance?
+                // Increase move speed as the distance from the focused point increases
+                float moveSpeed = OrbitDistance;
+
+                Vector3 translation = direction * moveSpeed * deltaTime;
+                Owner.Transform.Position += translation;
+
+                float projectedLength = Vector3.Dot(translation, Owner.Transform.Forward);
+                OrbitDistance = Math.Max(OrbitDistance - projectedLength, MinOrbitDistance);
             }
         }
     }
