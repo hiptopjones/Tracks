@@ -17,7 +17,7 @@ namespace Tracks
             //CreateTestCubeRing();
             //CreateLowPolyCar();
 
-            GameObject lightCube = CreateLightCube();
+            GameObject lightCube = CreateLightSource();
             CreateIlluminatedCube(lightCube);
 
             // This needs to be at the end of the draw list to make blending work properly with depth testing
@@ -105,7 +105,7 @@ namespace Tracks
             }
         }
 
-        private GameObject CreateLightCube()
+        private GameObject CreateLightSource()
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Light Source");
             gameObject.Transform.Position = new Vector3(2, 0, -2);
@@ -115,8 +115,9 @@ namespace Tracks
             cubeComponent.Vertices = GameSettings.CubeVertices;
             cubeComponent.VertexShaderId = ShaderId.LightSourceVertex;
             cubeComponent.FragmentShaderId = ShaderId.LightSourceFragment;
-            cubeComponent.IsLightSource = true;
             cubeComponent.Color = Color4.White;
+
+            ServiceLocator.Instance.ProvideService("Light Source", cubeComponent);
 
             return gameObject;
         }
@@ -130,8 +131,8 @@ namespace Tracks
             cubeComponent.Vertices = GameSettings.CubeVertices;
             cubeComponent.VertexShaderId = ShaderId.IlluminatedTargetVertex;
             cubeComponent.FragmentShaderId = ShaderId.IlluminatedTargetFragment;
-            cubeComponent.LightColor = new Color4(1.0f, 0.5f, 0.31f, 1.0f);
-            cubeComponent.Color = Color4.White;
+            cubeComponent.IsIlluminated = true;
+            cubeComponent.Color = Color4.Red;
 
             OrbitMoveComponent orbitMoveComponent = gameObject.AddComponent<OrbitMoveComponent>();
             orbitMoveComponent.OrbitalRadius = 3;

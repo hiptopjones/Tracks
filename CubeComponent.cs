@@ -13,7 +13,7 @@ namespace Tracks
         public ShaderId FragmentShaderId { get; set; }
         public Color4 Color { get; set; } = Color4.White;
         public Color4 LightColor { get; set; } = Color4.White;
-        public bool IsLightSource { get; set; }
+        public bool IsIlluminated { get; set; }
 
         private int VertexArrayHandle { get; set; }
         private int VertexBufferHandle { get; set; }
@@ -21,14 +21,15 @@ namespace Tracks
         private int VertexCount { get; set; }
 
         private ShaderProgram ShaderProgram { get; set; }
-        private Texture Texture { get; set; }
         private ResourceManager ResourceManager { get; set; }
         private CameraComponent MainCamera { get; set; }
+        private CubeComponent LightSource { get; set; }
 
         public override void Awake()
         {
             ResourceManager = ServiceLocator.Instance.GetService<ResourceManager>();
             MainCamera = ServiceLocator.Instance.GetService<CameraComponent>("Main Camera");
+            LightSource = ServiceLocator.Instance.GetService<CubeComponent>("Light Source");
 
             ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
 
@@ -74,10 +75,11 @@ namespace Tracks
             ShaderProgram.SetUniform("projection", GetProjectionMatrix());
 
             ShaderProgram.SetUniform("color", Color);
-            if (!IsLightSource)
+            if (IsIlluminated)
             {
-                ShaderProgram.SetUniform("light_color", LightColor);
-                ShaderProgram.SetUniform("light_pos", new Vector3(2, 0, -2)); // TODO: Get the real light position
+                ShaderProgram.SetUniform("view_pos", MainCamera.Owner.Transform.Position);
+                ShaderProgram.SetUniform("light_color", LightSource.Color);
+                ShaderProgram.SetUniform("light_pos", LightSource.Owner.Transform.Position);
             }
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, VertexCount);
