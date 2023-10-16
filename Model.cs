@@ -9,6 +9,9 @@ using AssimpScene = Assimp.Scene;
 
 namespace Tracks
 {
+    // Lots of help from
+    //  * https://learnopengl.com/Model-Loading/Assimp
+    //  * https://github.com/Gargaj/Foxotron (e.g. color map)
     internal class Model
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
@@ -35,7 +38,10 @@ namespace Tracks
         {
             foreach (Mesh mesh in Meshes)
             {
-                Matrix4 meshTransform = modelTransform * mesh.Transform;
+                // Always this order in OpenTK
+                // vertex * (S * R * T) * (S * R * T) * (S * R * T) * . . . 
+                // vertex * Child       * Parent    *   Grandparent * (Model * View * Projection)
+                Matrix4 meshTransform = mesh.Transform * modelTransform;
                 shaderProgram.SetUniform("model", meshTransform);
 
                 mesh.Draw(shaderProgram);
@@ -99,24 +105,24 @@ namespace Tracks
 
             colorMaps.Add(diffuseColorMap);
 
-            Matrix4 transform = GetExpandedTransform(node);
+            Matrix4 transform = GetExpandedTransform(node, Matrix4.Identity);
 
             return new Mesh(name, vertices, indices, colorMaps, transform);
         }
 
-        private static Matrix4 GetExpandedTransform(AssimpNode node)
+        // Always this order in OpenTK
+        // vertex * (S * R * T) * (S * R * T) * (S * R * T) * . . . 
+        // vertex * Child       * Parent    *   Grandparent * (Model * View * Projection)
+        private static Matrix4 GetExpandedTransform(AssimpNode node, Matrix4 transform)
         {
-            Matrix4 fullTransform = node.Transform.ToMatrix4();
+            transform *= node.Transform.ToMatrix4();
 
-            while (node.Parent != null)
+            if (node.Parent != null)
             {
-                node = node.Parent;
-
-                Matrix4 nodeTransform = node.Transform.ToMatrix4();
-                fullTransform = fullTransform * nodeTransform;
+                transform = GetExpandedTransform(node.Parent, transform);
             }
 
-            return fullTransform;
+            return transform;
         }
 
         private static Texture LoadTexture(TextureSlot textureSlot)

@@ -47,6 +47,19 @@ namespace Tracks
 
             HandleMouseMovement(deltaTime);
             HandleKeyboardMovement(deltaTime);
+
+            HandleShortcuts();
+
+            Debug.DrawText($"CAMERA: {Owner.Transform.Position}", new Vector2(50, 20), Color4.Red, 0.5f);
+        }
+
+        private void HandleShortcuts()
+        {
+            // Set focal / orbit point
+            if (InputManager.IsKeyDown(Keys.Space))
+            {
+                OrbitDistance = MinOrbitDistance;
+            }
         }
 
         private void HandleObjectSelection()

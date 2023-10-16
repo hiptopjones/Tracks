@@ -15,10 +15,10 @@ namespace Tracks
             CreateUiCamera();
 
             //CreateTestCubeRing();
-            //CreateLowPolyCar();
+            CreateLowPolyCars();
 
-            GameObject lightCube = CreateLightSource();
-            CreateIlluminatedCube(lightCube);
+            //GameObject lightCube = CreateLightSource();
+            //CreateIlluminatedCube(lightCube);
 
             // This needs to be at the end of the draw list to make blending work properly with depth testing
             CreateDebugGrid();
@@ -142,12 +142,24 @@ namespace Tracks
             return gameObject;
         }
 
-        private GameObject CreateLowPolyCar()
+        private void CreateLowPolyCars()
         {
-            GameObject gameObject = GameObjectManager.CreateGameObject("Low Poly Car");
+            CreateLowPolyCar(ModelId.LowPolyCar, new Vector3(10, 0, 10), Quaternion.Identity, new Vector3(0.01f));
+            CreateLowPolyCar(ModelId.CartoonCar, new Vector3(-10, 0, 10), Quaternion.Identity, new Vector3(0.01f));
+            CreateLowPolyCar(ModelId.RaceCar, new Vector3(10, 0, -10), Quaternion.FromAxisAngle(Vector3.UnitY, MathHelper.DegreesToRadians(90)), new Vector3(0.01f));
+            CreateLowPolyCar(ModelId.Jeep, new Vector3(-10, 0, -10), Quaternion.Identity, new Vector3(0.01f));
+        }
+
+
+        private GameObject CreateLowPolyCar(ModelId modelId, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject(modelId.ToString());
+            gameObject.Transform.Position = position;
+            gameObject.Transform.Rotation = rotation;
+            gameObject.Transform.Scale = scale;
 
             ModelComponent modelComponent = gameObject.AddComponent<ModelComponent>();
-            modelComponent.ModelId = ModelId.LowPolyCar;
+            modelComponent.ModelId = modelId;
 
             return gameObject;
         }
