@@ -18,16 +18,32 @@ namespace Tracks
         public GameObject OrbitalTarget { get; set; }
 
         private float CurrentAngleDegrees { get; set; }
+        private bool IsOrbiting { get; set; } = true;
+
+        private InputManager InputManager { get; set; }
+
+        public override void Awake()
+        {
+            InputManager = ServiceLocator.Instance.GetService<InputManager>();
+        }
 
         public override void Update(float deltaTime)
         {
-            CurrentAngleDegrees += AngularSpeedDegrees * deltaTime;
+            if (InputManager.IsKeyDown(Keys.T))
+            {
+                IsOrbiting = !IsOrbiting;
+            }
 
-            float x = OrbitalRadius * (float)Math.Cos(MathHelper.DegreesToRadians(CurrentAngleDegrees));
-            float y = OrbitalRadius * (float)Math.Sin(MathHelper.DegreesToRadians(CurrentAngleDegrees));
+            if (IsOrbiting)
+            {
+                CurrentAngleDegrees += AngularSpeedDegrees * deltaTime;
 
-            Owner.Transform.Position = OrbitalTarget.Transform.Position + new Vector3(x, 0, y);
-            Owner.Transform.Rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, MathHelper.DegreesToRadians(CurrentAngleDegrees));
+                float x = OrbitalRadius * (float)Math.Cos(MathHelper.DegreesToRadians(CurrentAngleDegrees));
+                float y = OrbitalRadius * (float)Math.Sin(MathHelper.DegreesToRadians(CurrentAngleDegrees));
+
+                Owner.Transform.Position = OrbitalTarget.Transform.Position + new Vector3(x, 0, y);
+                Owner.Transform.Rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, MathHelper.DegreesToRadians(CurrentAngleDegrees));
+            }
         }
     }
 }
