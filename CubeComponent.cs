@@ -4,23 +4,21 @@ using System.Reflection;
 
 namespace Tracks
 {
-    internal class Test3dComponent : Drawable3dComponent
+    internal class CubeComponent : Drawable3dComponent
     {
         public float[] Vertices { get; set; }
         public uint[] Indices { get; set; }
 
         public ShaderId VertexShaderId { get; set; }
         public ShaderId FragmentShaderId { get; set; }
-        public TextureId TextureId { get; set; }
         public Color4 Color { get; set; } = Color4.White;
-
-        public bool IsWireframe { get; set; }
+        public Color4 LightColor { get; set; } = Color4.White;
+        public bool IsLightSource { get; set; }
 
         private int VertexArrayHandle { get; set; }
         private int VertexBufferHandle { get; set; }
-        private int ElementBufferHandle { get; set; }
+
         private int VertexCount { get; set; }
-        private bool UseElementArray { get; set; }
 
         private ShaderProgram ShaderProgram { get; set; }
         private Texture Texture { get; set; }
@@ -33,7 +31,6 @@ namespace Tracks
             MainCamera = ServiceLocator.Instance.GetService<CameraComponent>("Main Camera");
 
             ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
-            Texture = ResourceManager.GetTexture(TextureId);
 
             InitializeVertexBufferObject();
         }
@@ -51,24 +48,14 @@ namespace Tracks
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferHandle);
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
 
-            // Only use element buffers if indices were provided
-            UseElementArray = Indices != null && Indices.Any();
-            if (UseElementArray)
-            {
-                // Generate and bind an element buffer object
-                ElementBufferHandle = GL.GenBuffer();
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferHandle);
-                GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
-            }
-
             // Specify the layout of the vertex data
             int positionAttribHandle = 0;
             GL.VertexAttribPointer(positionAttribHandle, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
             GL.EnableVertexAttribArray(positionAttribHandle);
 
-            int textureCoordinatesAttribHandle = 1;
-            GL.VertexAttribPointer(textureCoordinatesAttribHandle, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));
-            GL.EnableVertexAttribArray(textureCoordinatesAttribHandle);
+            int normalAttribHandle = 1;
+            GL.VertexAttribPointer(normalAttribHandle, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(normalAttribHandle);
 
             // Unbind the vertex buffer object (does not affect vertex array)
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -80,48 +67,22 @@ namespace Tracks
         public override void Draw()
         {
             GL.UseProgram(ShaderProgram.Handle);
-            GL.BindTexture(TextureTarget.Texture2D, Texture.Handle);
             GL.BindVertexArray(VertexArrayHandle);
 
-            Matrix4 model = GetModelMatrix();
-            int modelUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "model");
-            GL.UniformMatrix4(modelUniformHandle, false, ref model);
+            ShaderProgram.SetUniform("model", GetModelMatrix());
+            ShaderProgram.SetUniform("view", GetViewMatrix());
+            ShaderProgram.SetUniform("projection", GetProjectionMatrix());
 
-            Matrix4 view = GetViewMatrix();
-            int viewUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "view");
-            GL.UniformMatrix4(viewUniformHandle, false, ref view);
-
-            Matrix4 projection = GetProjectionMatrix();
-            int projectionUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "projection");
-            GL.UniformMatrix4(projectionUniformHandle, false, ref projection);
-
-            int colorUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "color");
-            GL.Uniform4(colorUniformHandle, Color);
-
-            if (IsWireframe)
+            ShaderProgram.SetUniform("color", Color);
+            if (!IsLightSource)
             {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-
-                int isWireframeUniformHandle = GL.GetUniformLocation(ShaderProgram.Handle, "isWireframe");
-                GL.Uniform1(isWireframeUniformHandle, Convert.ToInt32(IsWireframe));
+                ShaderProgram.SetUniform("light_color", LightColor);
+                ShaderProgram.SetUniform("light_pos", new Vector3(2, 0, -2)); // TODO: Get the real light position
             }
 
-            if (UseElementArray)
-            {
-                GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
-            }
-            else
-            {
-                GL.DrawArrays(PrimitiveType.Triangles, 0, VertexCount);
-            }
-
-            if (IsWireframe)
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-            }
+            GL.DrawArrays(PrimitiveType.Triangles, 0, VertexCount);
 
             GL.BindVertexArray(0);  
-            GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.UseProgram(0);
         }
 

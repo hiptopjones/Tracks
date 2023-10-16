@@ -14,8 +14,11 @@ namespace Tracks
             CreateMainCamera();
             CreateUiCamera();
 
-            CreateTestCubeRing();
-            CreateLowPolyCar();
+            //CreateTestCubeRing();
+            //CreateLowPolyCar();
+
+            GameObject lightCube = CreateLightCube();
+            CreateIlluminatedCube(lightCube);
 
             // This needs to be at the end of the draw list to make blending work properly with depth testing
             CreateDebugGrid();
@@ -101,6 +104,43 @@ namespace Tracks
                 CreateTestCube(position, Quaternion.Identity, Vector3.One * scale, textureId);
             }
         }
+
+        private GameObject CreateLightCube()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Light Source");
+            gameObject.Transform.Position = new Vector3(2, 0, -2);
+            gameObject.Transform.Scale = new Vector3(0.5f);
+
+            CubeComponent cubeComponent = gameObject.AddComponent<CubeComponent>();
+            cubeComponent.Vertices = GameSettings.CubeVertices;
+            cubeComponent.VertexShaderId = ShaderId.LightSourceVertex;
+            cubeComponent.FragmentShaderId = ShaderId.LightSourceFragment;
+            cubeComponent.IsLightSource = true;
+            cubeComponent.Color = Color4.White;
+
+            return gameObject;
+        }
+
+        private GameObject CreateIlluminatedCube(GameObject lightCube)
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Illuminated Target");
+            gameObject.Transform.Position = new Vector3(1, 1, -1);
+
+            CubeComponent cubeComponent = gameObject.AddComponent<CubeComponent>();
+            cubeComponent.Vertices = GameSettings.CubeVertices;
+            cubeComponent.VertexShaderId = ShaderId.IlluminatedTargetVertex;
+            cubeComponent.FragmentShaderId = ShaderId.IlluminatedTargetFragment;
+            cubeComponent.LightColor = new Color4(1.0f, 0.5f, 0.31f, 1.0f);
+            cubeComponent.Color = Color4.White;
+
+            OrbitMoveComponent orbitMoveComponent = gameObject.AddComponent<OrbitMoveComponent>();
+            orbitMoveComponent.OrbitalRadius = 3;
+            orbitMoveComponent.OrbitalTarget = lightCube;
+            orbitMoveComponent.AngularSpeedDegrees = 45;
+
+            return gameObject;
+        }
+
         private GameObject CreateLowPolyCar()
         {
             GameObject gameObject = GameObjectManager.CreateGameObject("Low Poly Car");

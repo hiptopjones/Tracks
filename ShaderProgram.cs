@@ -59,6 +59,24 @@ namespace Tracks
             GL.Uniform4(uniformHandle, value);
         }
 
+        public void SetUniform(string name, Vector4 value)
+        {
+            int uniformHandle = GetUniformLocation(name);
+            GL.Uniform4(uniformHandle, value);
+        }
+
+        public void SetUniform(string name, Vector3 value)
+        {
+            int uniformHandle = GetUniformLocation(name);
+            GL.Uniform3(uniformHandle, value);
+        }
+
+        public void SetUniform(string name, Vector2 value)
+        {
+            int uniformHandle = GetUniformLocation(name);
+            GL.Uniform2(uniformHandle, value);
+        }
+
         public void SetUniform(ColorMap colorMap)
         {
             string namePrefix = $"map_{colorMap.Name}.";
