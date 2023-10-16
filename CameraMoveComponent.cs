@@ -1,12 +1,5 @@
-﻿using NLog;
-using NLog.Targets;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tracks
 {
@@ -62,23 +55,23 @@ namespace Tracks
 
             if (InputManager.IsKeyDown(Keys.D1))
             {
-                gameObject = GetSelectableObject(1);
+                gameObject = GetSelectableObject(0);
             }
             else if (InputManager.IsKeyDown(Keys.D2))
             {
-                gameObject = GetSelectableObject(2);
+                gameObject = GetSelectableObject(1);
             }
             else if (InputManager.IsKeyDown(Keys.D3))
             {
-                gameObject = GetSelectableObject(3);
+                gameObject = GetSelectableObject(2);
             }
             else if (InputManager.IsKeyDown(Keys.D4))
             {
-                gameObject = GetSelectableObject(4);
+                gameObject = GetSelectableObject(3);
             }
             else if (InputManager.IsKeyDown(Keys.D5))
             {
-                gameObject = GetSelectableObject(5);
+                gameObject = GetSelectableObject(4);
             }
 
             if (gameObject != null)
@@ -93,8 +86,13 @@ namespace Tracks
 
         private GameObject GetSelectableObject(int i)
         {
-            GameObject[] gameObjects = GameObjectManager.FindGameObjectsByComponent<Test3dComponent>();
-            return gameObjects[i];
+            GameObject[] gameObjects = GameObjectManager.FindGameObjectsByComponent<Drawable3dComponent>();
+            if (i < gameObjects.Length)
+            {
+                return gameObjects[i];
+            }
+
+            return null;
         }
 
         // Tried to mimic Unity's editor movement
