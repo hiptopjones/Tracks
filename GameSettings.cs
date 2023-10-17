@@ -174,6 +174,7 @@ namespace Tracks
 
     public enum ModelId
     {
+        None,
         LowPolyCar,
         CartoonCar,
         RaceCar,
@@ -182,6 +183,7 @@ namespace Tracks
 
     public enum ShaderId
     {
+        None,
         DefaultVertex,
         DefaultFragment,
         SpriteVertex,
@@ -200,6 +202,7 @@ namespace Tracks
 
     public enum TextureId
     {
+        None,
         SplashScreen,
         TestPattern,
         TestPalette,

@@ -5,7 +5,8 @@ namespace Tracks
 {
     internal class ModelComponent : Drawable3dComponent
     {
-        public ModelId ModelId { get; set; }
+        public ModelId ModelId { get; set; } = ModelId.None;
+        public Model Model { get; set; }
 
         public ShaderId VertexShaderId { get; set; } = ShaderId.DefaultMeshVertex;
         public ShaderId FragmentShaderId { get; set; } = ShaderId.DefaultMeshFragment;
@@ -13,7 +14,6 @@ namespace Tracks
         public int VertexCount => Model.Meshes.Sum(x => x.Vertices.Count);
 
         private ShaderProgram ShaderProgram { get; set; }
-        private Model Model { get; set; }
 
         private ResourceManager ResourceManager { get; set; }
         private CameraComponent MainCamera { get; set; }
@@ -24,7 +24,10 @@ namespace Tracks
             MainCamera = ServiceLocator.Instance.GetService<CameraComponent>("Main Camera");
 
             ShaderProgram = ResourceManager.GetShaderProgram(VertexShaderId, FragmentShaderId);
-            Model = ResourceManager.GetModel(ModelId);
+            if (ModelId != ModelId.None)
+            {
+                Model = ResourceManager.GetModel(ModelId);
+            }
         }
 
         public override void Draw()

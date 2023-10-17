@@ -16,6 +16,7 @@ namespace Tracks
 
             //CreateTestCubeRing();
             CreateLowPolyCars();
+            CreateTestRoad();
 
             //GameObject lightCube = CreateLightSource();
             //CreateIlluminatedCube(lightCube);
@@ -150,7 +151,6 @@ namespace Tracks
             CreateLowPolyCar(ModelId.Jeep, new Vector3(-10, 0, -10), Quaternion.Identity, new Vector3(0.01f));
         }
 
-
         private GameObject CreateLowPolyCar(ModelId modelId, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             GameObject gameObject = GameObjectManager.CreateGameObject(modelId.ToString());
@@ -160,6 +160,35 @@ namespace Tracks
 
             ModelComponent modelComponent = gameObject.AddComponent<ModelComponent>();
             modelComponent.ModelId = modelId;
+
+            return gameObject;
+        }
+
+        private GameObject CreateTestRoad()
+        {
+            GameObject gameObject = GameObjectManager.CreateGameObject("Test Road");
+            gameObject.Transform.Position = new Vector3(20, 0.1f, 20);
+
+            // Tracing more than 360 degrees because the first / last waypoints are not part of the road
+            float totalDegrees = 420;
+            float degreeStep = 30;
+            float roadRadius = 30;
+            List<Vector3> roadWaypoints = new List<Vector3>();
+            for (float angleDegrees = 0; angleDegrees <= totalDegrees; angleDegrees += degreeStep)
+            {
+                float x = roadRadius * MathF.Cos(MathHelper.DegreesToRadians(angleDegrees));
+                float y = roadRadius * MathF.Sin(MathHelper.DegreesToRadians(angleDegrees));
+
+                roadWaypoints.Add(new Vector3(x, 0, y));
+            }
+
+            roadWaypoints.Insert(4, new Vector3(0, 0, 0));
+
+            RoadMeshGenerator roadMeshGenerator = new RoadMeshGenerator(roadWaypoints.ToArray(), 3, roadWaypoints.Count * 3, 1);
+            Mesh mesh = roadMeshGenerator.CreateMesh();
+
+            ModelComponent modelComponent = gameObject.AddComponent<ModelComponent>();
+            modelComponent.Model = Model.CreateFromMesh(mesh);
 
             return gameObject;
         }
