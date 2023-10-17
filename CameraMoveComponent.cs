@@ -155,7 +155,7 @@ namespace Tracks
                     }
 
                     // Increase slide speed as the distance from the focused point increases
-                    float slideSpeed = (float)Math.Max(1, OrbitDistance / 3);
+                    float slideSpeed = MathF.Max(1, OrbitDistance / 3);
 
                     Vector3 offsetRight = Owner.Transform.Right * -mouseDelta.X * slideSpeed;
                     Vector3 offsetUp = Owner.Transform.Up * mouseDelta.Y * slideSpeed;
@@ -183,11 +183,11 @@ namespace Tracks
                     float zoomSpeed = OrbitDistance;
 
                     // Down zooms in, Up zooms out
-                    float signedOffset = mouseDelta.Length * Math.Sign(mouseDelta.Y) * zoomSpeed;
+                    float signedOffset = mouseDelta.Length * MathF.Sign(mouseDelta.Y) * zoomSpeed;
 
                     Owner.Transform.Position += Owner.Transform.Forward * signedOffset;
 
-                    OrbitDistance = Math.Max(OrbitDistance - signedOffset, MinOrbitDistance);
+                    OrbitDistance = MathF.Max(OrbitDistance - signedOffset, MinOrbitDistance);
                 }
                 else
                 {
@@ -232,11 +232,11 @@ namespace Tracks
                     float zoomSpeed = OrbitDistance;
 
                     // Down zooms in, Up zooms out
-                    float signedOffset = mouseWheelDelta.Length * Math.Sign(mouseWheelDelta.Y) * zoomSpeed;
+                    float signedOffset = mouseWheelDelta.Length * MathF.Sign(mouseWheelDelta.Y) * zoomSpeed;
 
                     Owner.Transform.Position += Owner.Transform.Forward * signedOffset;
 
-                    OrbitDistance = Math.Max(OrbitDistance - signedOffset, MinOrbitDistance);
+                    OrbitDistance = MathF.Max(OrbitDistance - signedOffset, MinOrbitDistance);
                 }
             }
         }
@@ -296,7 +296,7 @@ namespace Tracks
                 Owner.Transform.Position += translation;
 
                 float projectedLength = Vector3.Dot(translation, Owner.Transform.Forward);
-                OrbitDistance = Math.Max(OrbitDistance - projectedLength, MinOrbitDistance);
+                OrbitDistance = MathF.Max(OrbitDistance - projectedLength, MinOrbitDistance);
             }
         }
     }

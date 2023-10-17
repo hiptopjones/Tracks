@@ -91,7 +91,7 @@ namespace Tracks
             for (int degrees = 0; degrees < 360; degrees += 30)
             {
                 float radians = MathHelper.DegreesToRadians(degrees);
-                Vector3 position = new Vector3((float)Math.Cos(radians), 0, (float)Math.Sin(radians)) * distance;
+                Vector3 position = new Vector3(MathF.Cos(radians), 0, MathF.Sin(radians)) * distance;
 
                 float scale = ((degrees % 60) + 30) / 90f;
 

@@ -38,8 +38,8 @@ namespace Tracks
             {
                 CurrentAngleDegrees += AngularSpeedDegrees * deltaTime;
 
-                float x = OrbitalRadius * (float)Math.Cos(MathHelper.DegreesToRadians(CurrentAngleDegrees));
-                float y = OrbitalRadius * (float)Math.Sin(MathHelper.DegreesToRadians(CurrentAngleDegrees));
+                float x = OrbitalRadius * MathF.Cos(MathHelper.DegreesToRadians(CurrentAngleDegrees));
+                float y = OrbitalRadius * MathF.Sin(MathHelper.DegreesToRadians(CurrentAngleDegrees));
 
                 Owner.Transform.Position = OrbitalTarget.Transform.Position + new Vector3(x, 0, y);
                 Owner.Transform.Rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, MathHelper.DegreesToRadians(CurrentAngleDegrees));
