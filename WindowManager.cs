@@ -20,20 +20,20 @@ namespace Tracks
         public bool IsOpen => !GameWindow.IsExiting;
 
         public string Name { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int WindowWidth { get; set; }
+        public int WindowHeight { get; set; }
 
         private GameWindow GameWindow { get; }
 
         public WindowManager(string windowName, int windowWidth, int windowHeight)
         {
-            Width = windowWidth;
-            Height = windowHeight;
+            WindowWidth = windowWidth;
+            WindowHeight = windowHeight;
 
             GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
             NativeWindowSettings nativeWindowSettings = new NativeWindowSettings
             {
-                Size = new Vector2i(Width, Height),
+                Size = new Vector2i(WindowWidth, WindowHeight),
                 Title = windowName,
                 Profile = ContextProfile.Any,
                 Flags = ContextFlags.ForwardCompatible,
@@ -83,8 +83,8 @@ namespace Tracks
 
         private void OnResized(ResizeEventArgs e)
         {
-            Width = e.Width;
-            Height = e.Height;
+            WindowWidth = e.Width;
+            WindowHeight = e.Height;
 
             GL.Viewport(0, 0, e.Width, e.Height);
 

@@ -16,6 +16,7 @@ namespace Tracks
 
             //CreateTestCubeRing();
             CreateLowPolyCars();
+            CreatePlayer();
             CreateTestRoad();
 
             //GameObject lightCube = CreateLightSource();
@@ -25,6 +26,11 @@ namespace Tracks
             CreateDebugGrid();
 
             CreateDiagnostics();
+        }
+
+        private void CreatePlayer()
+        {
+            CreateLowPolyCar(ModelId.RaceCar, new Vector3(10, 0, -10), Quaternion.FromAxisAngle(Vector3.UnitY, MathHelper.DegreesToRadians(90)), new Vector3(0.01f));
         }
 
         private GameObject CreateDebugGrid()

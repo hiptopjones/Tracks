@@ -35,7 +35,7 @@ namespace Tracks
 
         private void OnWindowResized(object sender, ResizeEventArgs e)
         {
-            AspectRatio = WindowManager.Width / (float)WindowManager.Height;
+            AspectRatio = WindowManager.WindowWidth / (float)WindowManager.WindowHeight;
 
             UpdateProjectionMatrix();
         }
