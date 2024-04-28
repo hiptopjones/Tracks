@@ -1,5 +1,5 @@
 # Tracks
-Converted my 2D SFML game engine to work in 3D.  OpenGL shaders, model loading, camera control.
+3D game engine created using OpenTK.  Basic model loading, camera control, and lighting.
 
-https://github.com/hiptopjones/Tracks/assets/3208743/d4a8e9d9-74cf-4bb6-b92d-71d3bca5eaf7
+https://github.com/hiptopjones/Tracks/assets/3208743/7a9c7c81-4de8-4e26-854d-7157f1dde92e
 
